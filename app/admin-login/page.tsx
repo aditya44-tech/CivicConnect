@@ -1,6 +1,6 @@
 /**
- * Signup Page - Full screen authentication view.
- * Renders at the root layout (bypasses the global Navbar).
+ * Admin Login Page - Full screen authentication view for city officials.
+ * Renders at the root layout.
  */
 "use client";
 
@@ -8,7 +8,7 @@ import Link from "next/link";
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
 
-export default function SignupPage() {
+export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 sm:p-8 lg:p-12">
       <div className="flex w-full max-w-[1040px] min-h-[680px] overflow-hidden rounded-[2rem] bg-white shadow-xl ring-1 ring-gray-200">
@@ -43,18 +43,18 @@ export default function SignupPage() {
 
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-white/50">
-              Join the community
+              Admin Portal
             </p>
-            <h2 className="mt-4 text-4xl font-bold leading-[1.1] text-white tracking-tight">
-              Be the reason your street gets fixed.
-            </h2>
+            <blockquote className="mt-4 text-3xl font-bold leading-[1.1] text-white tracking-tight">
+              &ldquo;CivicConnect has transformed how our city manages infrastructure requests.&rdquo;
+            </blockquote>
             <p className="mt-5 text-sm font-medium text-white/50">
-              Free to join. Takes under a minute. 1,200+ issues resolved so far.
+              David Chen · City Manager, Riverside
             </p>
           </div>
 
           <div className="flex items-center gap-6 text-sm font-medium text-white/40">
-            <span>No login required to browse</span>
+            <span>Secure Access</span>
             <span className="h-1 w-1 rounded-full bg-white/20" />
             <span>Riverside, CA</span>
           </div>
@@ -70,10 +70,10 @@ export default function SignupPage() {
           </div>
 
           <h1 className="mt-8 text-2xl font-black tracking-tight text-gray-900 lg:mt-0">
-            Create your account
+            City Official Login
           </h1>
           <p className="mt-1.5 text-sm text-gray-500">
-            Start reporting issues in your neighborhood today.
+            Log in to manage civic issues and city workflows.
           </p>
 
           <form
@@ -81,47 +81,40 @@ export default function SignupPage() {
             onSubmit={(e) => e.preventDefault()}
           >
             <label className="block">
-              <span className="text-sm font-semibold text-gray-700">Full name</span>
+              <span className="text-sm font-semibold text-gray-700">Official Email or Employee ID</span>
               <input
                 type="text"
-                name="name"
-                placeholder="Alex Kim"
-                className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-semibold text-gray-700">Email</span>
-              <input
-                type="email"
                 name="email"
-                placeholder="you@example.com"
+                placeholder="city_official@riverside.gov"
                 className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
               />
             </label>
             <label className="block">
-              <span className="text-sm font-semibold text-gray-700">Password</span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-gray-700">Password</span>
+              </div>
               <input
                 type="password"
                 name="password"
-                placeholder="At least 8 characters"
+                placeholder="••••••••"
                 className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
               />
             </label>
-            <Button type="submit" size="lg" className="w-full">
-              Get Started
-            </Button>
-            <p className="text-center text-xs text-gray-400">
-              Demo only — no account is actually created.
-            </p>
+            
+            <Link href="/admin" className="block w-full">
+              <Button type="button" size="lg" className="w-full">
+                Access Dashboard
+              </Button>
+            </Link>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-500">
-            Already have an account?{" "}
+            Citizen user?{" "}
             <Link
               href="/login"
               className="font-semibold text-primary hover:text-primary-dark"
             >
-              Log in
+              Return to regular login
             </Link>
           </p>
         </div>

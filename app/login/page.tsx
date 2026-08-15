@@ -10,11 +10,12 @@ import Logo from "@/components/Logo";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen">
-      <div 
-        className="relative hidden w-2/5 overflow-hidden lg:block bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/auth-bg.png')" }}
-      >
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 sm:p-8 lg:p-12">
+      <div className="flex w-full max-w-[1040px] min-h-[680px] overflow-hidden rounded-[2rem] bg-white shadow-xl ring-1 ring-gray-200">
+        <div 
+          className="relative hidden w-[45%] overflow-hidden m-3 rounded-[1.5rem] lg:block bg-cover bg-center"
+          style={{ backgroundImage: "url('/loginpage/download%20(10).jpg')" }}
+        >
         {/* Subtle overlay to ensure text contrast */}
         <div className="absolute inset-0 bg-black/20" />
 
@@ -41,7 +42,7 @@ export default function LoginPage() {
           </Link>
 
           <div>
-            <blockquote className="text-3xl font-bold leading-snug text-white tracking-tight">
+            <blockquote className="text-3xl font-bold leading-[1.1] text-white tracking-tight">
               &ldquo;Our pothole was patched in four days. That&apos;s never happened before.&rdquo;
             </blockquote>
             <p className="mt-5 text-sm font-medium text-white/50">
@@ -113,6 +114,19 @@ export default function LoginPage() {
               Create an account
             </Link>
           </p>
+
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+            <p className="text-sm text-gray-500">
+              City Official?{" "}
+              <Link
+                href="/admin-login"
+                className="font-semibold text-primary hover:text-primary-dark"
+              >
+                Admin Login
+              </Link>
+            </p>
+          </div>
+        </div>
         </div>
       </div>
     </div>
