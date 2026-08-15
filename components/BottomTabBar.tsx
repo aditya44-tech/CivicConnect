@@ -25,14 +25,14 @@ export default function BottomTabBar() {
 
   return (
     <nav className="fixed inset-x-3 bottom-3 z-50 md:hidden">
-      <div className="flex items-center justify-around rounded-3xl border border-gray-200/70 bg-white/85 px-2 py-2 shadow-xl shadow-black/5 backdrop-blur-xl">
+      <div className="flex items-center justify-around rounded-2xl border border-hairline bg-surface-card/95 px-2 py-2 shadow-xl shadow-black/[0.06] backdrop-blur-md">
         {tabs.map(({ href, label, Icon }) => {
           const active = isActive(href);
           return (
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[11px] font-semibold transition-colors ${
+              className={`flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-[11px] font-semibold transition-colors ${
                 active ? "text-primary" : "text-gray-400 hover:text-gray-600"
               }`}
             >
@@ -44,7 +44,7 @@ export default function BottomTabBar() {
         <Link
           href="/submit"
           aria-label="Submit a complaint"
-          className="-mt-7 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg shadow-primary/40 transition-transform active:scale-95"
+          className="-mt-7 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-surface-soft shadow-lg shadow-primary/25 transition-all active:scale-95 hover:bg-primary-dark"
         >
           <PlusIcon className="h-6 w-6" />
         </Link>

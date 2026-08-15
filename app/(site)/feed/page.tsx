@@ -1,9 +1,16 @@
+/**
+ * Feed Page - Community dashboard for viewing all public complaints.
+ * Includes client-side filtering by category, status, and search query.
+ */
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import ComplaintCard from "@/components/ComplaintCard";
 import { SearchIcon, XIcon } from "@/components/icons";
 import { CATEGORIES, complaints, type Status } from "@/lib/data";
+import { statusCounts } from "@/lib/data";
+import Button from "@/components/Button";
 
 const statuses: (Status | "All")[] = ["All", "Pending", "In Progress", "Resolved"];
 
@@ -11,6 +18,10 @@ export default function FeedPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [status, setStatus] = useState<Status | "All">("All");
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  const counts = statusCounts();
+  const resolved = counts.Resolved;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -24,26 +35,51 @@ export default function FeedPage() {
   }, [query, category, status]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="mx-auto max-w-6xl px-4 py-8 pb-24 sm:px-6 sm:pb-12">
+      
+      {showWelcome && (
+        <div className="mb-8 flex flex-col items-start justify-between gap-6 rounded-2xl bg-surface-card px-8 py-7 shadow-sm ring-1 ring-hairline sm:flex-row sm:items-center">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-gray-900">Welcome to CivicConnect</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-600">
+              This is your community hub. Browse nearby issues, upvote the ones you care about, or tap <span className="font-semibold text-primary">New Report</span> to submit a problem.
+            </p>
+          </div>
+          <button 
+            type="button"
+            className="shrink-0 rounded-full border border-hairline px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-500 transition-colors hover:bg-surface-soft hover:text-gray-900"
+            onClick={() => setShowWelcome(false)}
+            aria-label="Dismiss welcome message"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            Public feed
+          <h1 className="text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
+            Community Feed
           </h1>
-          <p className="mt-1 text-gray-500">
-            Recent complaints from across the city.
+          <p className="mt-2 text-base text-gray-500">
+            See what issues have been reported in your neighborhood and track their resolution progress.
           </p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <Button className="bg-primary text-surface-soft">
+            <Link href="/submit">+ New Report</Link>
+          </Button>
         </div>
       </div>
 
-      {/* Search */}
       <div className="relative mt-6 max-w-xl">
-        <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+        <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by keyword or address…"
-          className="w-full rounded-full border border-gray-200 bg-white py-3 pl-12 pr-10 text-sm shadow-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+          className="w-full rounded-2xl border border-hairline bg-surface-card py-3 pl-11 pr-10 text-sm shadow-[0_1px_3px_rgba(0,0,0,0.03)] outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
         />
         {query && (
           <button
@@ -57,7 +93,6 @@ export default function FeedPage() {
         )}
       </div>
 
-      {/* Category chips */}
       <div className="no-scrollbar mt-5 flex gap-2 overflow-x-auto pb-1">
         {["All", ...CATEGORIES].map((cat) => (
           <button
@@ -66,8 +101,8 @@ export default function FeedPage() {
             onClick={() => setCategory(cat)}
             className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-all active:scale-95 ${
               category === cat
-                ? "bg-gray-900 text-white shadow-md"
-                : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                ? "bg-primary text-surface-soft"
+                : "border border-hairline bg-surface-card text-gray-600 hover:bg-surface-soft"
             }`}
           >
             {cat}
@@ -75,7 +110,6 @@ export default function FeedPage() {
         ))}
       </div>
 
-      {/* Status chips */}
       <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1">
         {statuses.map((s) => (
           <button
@@ -84,8 +118,8 @@ export default function FeedPage() {
             onClick={() => setStatus(s)}
             className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-all active:scale-95 ${
               status === s
-                ? "bg-primary text-white shadow-md shadow-primary/25"
-                : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                ? "bg-primary text-surface-soft"
+                : "border border-hairline bg-surface-card text-gray-600 hover:bg-surface-soft"
             }`}
           >
             {s}
@@ -93,23 +127,43 @@ export default function FeedPage() {
         ))}
       </div>
 
-      <p className="mt-6 text-sm font-medium text-gray-400">
+      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-gray-400">
         {filtered.length} {filtered.length === 1 ? "complaint" : "complaints"}
       </p>
 
       {filtered.length === 0 ? (
-        <div className="mt-6 rounded-3xl bg-white p-12 text-center shadow-sm ring-1 ring-gray-200/70">
-          <p className="text-lg font-semibold text-gray-900">
-            No complaints match
+        <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-hairline bg-surface-card p-16 text-center">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-soft ring-1 ring-hairline">
+            <SearchIcon className="h-6 w-6 text-gray-400" />
+          </div>
+          <p className="text-base font-bold text-gray-900">
+            No complaints found
           </p>
-          <p className="mt-1 text-sm text-gray-500">
-            Try clearing the search or switching filters.
+          <p className="mt-2 max-w-sm text-sm text-gray-500">
+            We couldn't find anything matching your current filters. Try adjusting your search or resetting all filters.
           </p>
+          <Button
+            variant="secondary"
+            className="mt-6 bg-surface-card border-hairline text-gray-700 hover:bg-surface-soft"
+            onClick={() => {
+              setQuery("");
+              setCategory("All");
+              setStatus("All");
+            }}
+          >
+            Clear all filters
+          </Button>
         </div>
       ) : (
-        <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((c) => (
-            <ComplaintCard key={c.id} complaint={c} />
+        <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((c, index) => (
+            <div
+              key={c.id}
+              className="animate-slide-up-fade"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <ComplaintCard complaint={c} />
+            </div>
           ))}
         </div>
       )}

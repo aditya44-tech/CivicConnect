@@ -1,3 +1,7 @@
+/**
+ * Admin Layout - Wraps all pages under the /admin route.
+ * Injects the admin Sidebar and handles mobile navigation.
+ */
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Logo from "@/components/Logo";
@@ -15,7 +19,6 @@ export default function AdminLayout({
     <div className="min-h-screen bg-canvas lg:pl-64">
       <Sidebar />
 
-      {/* Mobile admin nav */}
       <div className="sticky top-0 z-40 border-b border-gray-200/60 bg-white/70 backdrop-blur-xl lg:hidden">
         <div className="flex items-center gap-2 px-4 py-3">
           <Logo size="sm" />

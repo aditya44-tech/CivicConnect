@@ -1,3 +1,8 @@
+/**
+ * Landing Page - Root entry point for the application.
+ * Displays the main hero section, feature breakdown, and call to action.
+ * Renders inside the (site) layout with the global Navbar.
+ */
 import Link from "next/link";
 import Button from "@/components/Button";
 import ComplaintCard from "@/components/ComplaintCard";
@@ -6,146 +11,194 @@ import { complaints } from "@/lib/data";
 
 const steps = [
   {
+    number: "01",
     Icon: FlagIcon,
     title: "Report",
     body: "Snap a photo and describe the issue in under a minute. No forms, no phone calls.",
   },
   {
+    number: "02",
     Icon: SearchIcon,
     title: "Track",
     body: "Follow your report through Pending, In Progress, and Resolved — transparently.",
   },
   {
+    number: "03",
     Icon: CheckCircleIcon,
     title: "Resolve",
     body: "See your neighborhood get better, and get notified the moment it's done.",
   },
 ];
 
+const stats = [
+  { value: "1,200+", label: "issues resolved" },
+  { value: "3.8d", label: "avg. resolution" },
+  { value: "10", label: "complaints tracked" },
+];
+
 export default function LandingPage() {
   return (
     <div className="overflow-hidden">
-      {/* Hero */}
-      <section className="relative">
-        <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
-        <div className="pointer-events-none absolute -right-20 top-40 h-80 w-80 rounded-full bg-accent-orange/15 blur-3xl" />
-
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-2 lg:pt-24">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-xs font-semibold text-gray-600 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-resolved" />
-              Serving Riverside since 2024
-            </span>
-            <h1 className="mt-6 text-5xl font-extrabold leading-[1.05] tracking-tight text-gray-900 sm:text-6xl">
-              Report it.
-              <br />
-              Track it.
-              <br />
-              <span className="bg-gradient-to-r from-primary to-accent-orange bg-clip-text text-transparent">
-                Get it fixed.
-              </span>
-            </h1>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-gray-500">
-              CivicConnect is the simplest way to report what's broken in your
-              city and watch it get resolved — no phone calls, no chasing
-              departments.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg">
-                <Link href="/signup">Get Started</Link>
-              </Button>
-              <Button size="lg" variant="secondary">
-                <Link href="/feed">Explore the feed</Link>
-              </Button>
-            </div>
-            <p className="mt-6 flex items-center gap-2 text-sm text-gray-400">
-              <MapPinIcon className="h-4 w-4" />
-              1,200+ issues resolved this year
-            </p>
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-8 sm:px-6 lg:grid-cols-2 lg:pt-16">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-surface-soft px-3.5 py-1.5 text-xs font-semibold text-surface-dark">
+            <span className="h-1.5 w-1.5 rounded-full bg-surface-dark" />
+            Now serving Riverside, CA
+          </div>
+          <h1 className="mt-6 text-hero text-gray-900 sm:text-[clamp(3rem,7.5vw,6rem)]">
+            Report it.<br />
+            Track it.<br />
+            <span className="text-primary">Get it fixed.</span>
+          </h1>
+          <p className="mt-5 max-w-md text-lg leading-relaxed text-gray-500">
+            CivicConnect is the simplest way to report what&apos;s broken in your
+            city and watch it get resolved.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button size="lg" className="glow-primary text-white bg-primary">
+              <Link href="/signup">Get Started</Link>
+            </Button>
+            <Button size="lg" variant="secondary" className="border-hairline bg-surface-card text-primary hover:bg-surface-soft">
+              <Link href="/feed">See public feed</Link>
+            </Button>
           </div>
 
-          {/* Hero preview: stacked complaint cards */}
-          <div className="relative hidden lg:block">
-            <div className="rotate-[-3deg] opacity-80">
-              <ComplaintCard complaint={complaints[3]} />
+          <div className="mt-10 flex items-center gap-6 border-t border-hairline pt-7">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <p className="text-xl font-black tracking-tight text-gray-900">{s.value}</p>
+                <p className="text-xs font-medium text-gray-400">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative hidden lg:flex lg:items-center lg:justify-center">
+          <div className="w-full max-w-sm">
+            <div className="overflow-hidden rounded-2xl bg-surface-soft shadow-[0_20px_60px_rgba(0,0,0,0.10)] ring-1 ring-hairline">
+              <div className="flex items-center gap-1.5 bg-surface-card px-4 py-2.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
+                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
+                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
+                <span className="mx-auto rounded-md bg-canvas/70 px-16 py-1 text-[10px] font-medium text-gray-400">
+                  civicconnect.app/complaints
+                </span>
+              </div>
+              <div className="bg-canvas p-3">
+                <ComplaintCard complaint={complaints[0]} />
+              </div>
             </div>
-            <div className="absolute -left-10 top-16 w-72 rotate-[4deg] opacity-95">
-              <ComplaintCard complaint={complaints[0]} />
-            </div>
-            <div className="absolute -bottom-10 right-4 w-80 rotate-[2deg]">
-              <ComplaintCard complaint={complaints[6]} />
+            <div className="absolute -bottom-6 -left-8 w-56 overflow-hidden rounded-2xl bg-surface-card shadow-[0_8px_24px_rgba(0,0,0,0.08)] ring-1 ring-hairline">
+              <div className="bg-canvas p-2.5">
+                <ComplaintCard complaint={complaints[3]} />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How it works */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary">
             How it works
-          </h2>
-          <p className="mt-3 text-gray-500">
-            Three steps between noticing a problem and seeing it fixed.
           </p>
+          <h2 className="mt-2 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
+            Three steps.<br />One resolved issue.
+          </h2>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {steps.map(({ Icon, title, body }, i) => (
+          {steps.map(({ number, Icon, title, body }) => (
             <div
               key={title}
-              className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-gray-200/70"
+              className="group relative overflow-hidden rounded-2xl bg-surface-card p-7 shadow-[0_1px_4px_rgba(0,0,0,0.05)] ring-1 ring-hairline"
             >
-              <div className="flex items-center gap-4">
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft text-primary-dark">
-                  <Icon className="h-6 w-6" />
+              <span className="absolute right-5 top-4 text-7xl font-black leading-none text-surface-soft select-none">
+                {number}
+              </span>
+              <div className="relative">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary-dark">
+                  <Icon className="h-5 w-5" />
                 </span>
-                <span className="text-sm font-bold text-gray-300">
-                  Step {i + 1}
-                </span>
+                <h3 className="mt-5 text-lg font-bold text-gray-900">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-500">{body}</p>
               </div>
-              <h3 className="mt-5 text-xl font-bold text-gray-900">{title}</h3>
-              <p className="mt-2 leading-relaxed text-gray-500">{body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA band */}
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-primary-dark px-8 py-14 text-center shadow-xl shadow-primary/25 sm:px-16">
-          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
-          <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            See something that needs fixing?
-          </h2>
-          <p className="relative mx-auto mt-3 max-w-xl text-white/80">
-            Join your neighbors on CivicConnect and turn complaints into
-            completed work orders.
-          </p>
-          <div className="relative mt-8 flex justify-center">
-            <Button
-              size="lg"
-              className="bg-white !text-primary-dark shadow-lg hover:bg-gray-50"
-            >
-              <Link href="/signup">Create your free account</Link>
-            </Button>
+        <div className="relative overflow-hidden rounded-3xl bg-surface-dark px-8 py-16 sm:px-16">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: "linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white opacity-[0.03] blur-3xl" />
+          <div className="relative">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary">
+              Riverside, CA
+            </p>
+            <h2 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">
+              Something broken?<br />
+              <span className="text-white/50">It takes 60 seconds.</span>
+            </h2>
+            <div className="grid gap-8 sm:grid-cols-3 mt-12">
+            {[
+              {
+                title: "1. Snap a photo",
+                desc: "See a pothole, graffiti, or broken streetlight? Take a quick picture with your phone.",
+              },
+              {
+                title: "2. Pin the location",
+                desc: "Our map automatically tags the exact coordinates so crews know where to go.",
+              },
+              {
+                title: "3. Track progress",
+                desc: "Get real-time updates as your report moves from pending to resolved.",
+              },
+            ].map((step, i) => (
+              <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <h4 className="font-bold text-white">{step.title}</h4>
+                <p className="mt-2 text-sm text-gray-400">{step.desc}</p>
+              </div>
+            ))}
+            </div>
+            <div className="mt-12 flex flex-wrap gap-3">
+              <Button
+                size="lg"
+                className="glow-primary bg-white !text-surface-dark hover:bg-surface-soft"
+              >
+                <Link href="/signup">Create your free account</Link>
+              </Button>
+              <Button size="lg" variant="ghost" className="!text-white/60 hover:!text-white hover:!bg-white/10">
+                <Link href="/feed">Browse the feed</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200/60 bg-white/60">
+      <footer className="border-t border-hairline bg-canvas">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 py-10 sm:px-6 md:flex-row">
-          <p className="text-sm text-gray-400">
-            © 2026 CivicConnect. Built for better neighborhoods.
-          </p>
-          <div className="flex gap-6 text-sm font-medium text-gray-500">
-            <Link href="/feed" className="hover:text-gray-900">
+          <div className="flex items-center gap-3">
+            <span className="h-6 w-6 rounded-lg bg-surface-dark flex items-center justify-center">
+              <MapPinIcon className="h-3.5 w-3.5 text-canvas" />
+            </span>
+            <p className="text-sm text-gray-400">
+              © 2026 CivicConnect · Built for better neighborhoods.
+            </p>
+          </div>
+          <div className="flex gap-6 text-sm font-medium text-gray-400">
+            <Link href="/feed" className="hover:text-gray-900 transition-colors">
               Feed
             </Link>
-            <Link href="/login" className="hover:text-gray-900">
+            <Link href="/login" className="hover:text-gray-900 transition-colors">
               Log in
             </Link>
-            <Link href="/admin" className="hover:text-gray-900">
+            <Link href="/admin" className="hover:text-gray-900 transition-colors">
               Admin
             </Link>
           </div>

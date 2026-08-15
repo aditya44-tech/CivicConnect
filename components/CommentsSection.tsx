@@ -23,22 +23,22 @@ export default function CommentsSection({
   };
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-gray-200/70">
-      <h2 className="text-lg font-bold text-gray-900">
+    <div className="rounded-2xl bg-white p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] ring-1 ring-black/[0.04]">
+      <h2 className="text-base font-bold text-gray-900">
         Comments{" "}
-        <span className="text-sm font-semibold text-gray-400">
+        <span className="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-500">
           {comments.length}
         </span>
       </h2>
-      <div className="mt-4 space-y-4">
+      <div className="mt-5 space-y-5">
         {comments.length === 0 ? (
-          <p className="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-500">
+          <p className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-500">
             No comments yet. Be the first to weigh in.
           </p>
         ) : (
           comments.map((c, i) => (
             <div key={i} className="flex gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary-dark">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary-dark">
                 {c.author
                   .split(" ")
                   .map((w) => w[0])
@@ -46,14 +46,12 @@ export default function CommentsSection({
                   .join("")
                   .toUpperCase()}
               </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900">
-                  {c.author}{" "}
-                  <span className="ml-1 text-xs font-normal text-gray-400">
-                    {c.time}
-                  </span>
+              <div className="min-w-0 flex-1 rounded-xl bg-gray-50 px-3.5 py-2.5">
+                <p className="text-xs font-semibold text-gray-700">
+                  {c.author}
+                  <span className="ml-2 font-normal text-gray-400">{c.time}</span>
                 </p>
-                <p className="mt-0.5 text-sm leading-relaxed text-gray-600">
+                <p className="mt-1 text-sm leading-relaxed text-gray-600">
                   {c.body}
                 </p>
               </div>

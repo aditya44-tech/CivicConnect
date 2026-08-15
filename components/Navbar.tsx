@@ -16,13 +16,13 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-200/60 bg-white/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/95 backdrop-blur-sm">
+      <div className="mx-auto flex h-15 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="shrink-0">
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-0.5 md:flex">
           {links.map((link) => {
             const active =
               pathname === link.href || pathname.startsWith(link.href + "/");
@@ -30,10 +30,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   active
-                    ? "bg-primary-soft text-primary-dark"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    ? "bg-primary text-surface-soft"
+                    : "text-gray-500 hover:bg-surface-soft hover:text-gray-900"
                 }`}
               >
                 {link.label}
