@@ -4,32 +4,32 @@
  */
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Button from "@/components/Button";
-import { CameraIcon, MapPinIcon, ChevronRightIcon, CheckCircleIcon, XIcon } from "@/components/icons";
+import { CameraIcon, MapPinIcon, ChevronRightIcon, CheckCircleIcon, XIcon, RouteIcon, LightbulbIcon, TreePineIcon, Volume2Icon, TrashIcon, DropletIcon, AlertCircleIcon, ClipboardIcon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/data";
 
-const CATEGORY_ICONS: Record<string, string> = {
-  Roads:    "🛣️",
-  Lighting: "💡",
-  Parks:    "🌳",
-  Noise:    "🔊",
-  Garbage:  "🗑️",
-  Water:    "💧",
-  Safety:   "⚠️",
-  Other:    "📋",
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  Roads: RouteIcon,
+  Lighting: LightbulbIcon,
+  Parks: TreePineIcon,
+  Noise: Volume2Icon,
+  Garbage: TrashIcon,
+  Water: DropletIcon,
+  Safety: AlertCircleIcon,
+  Other: ClipboardIcon,
 };
 
 const inputBase =
   "w-full rounded-xl border border-hairline bg-white px-4 py-3.5 text-[15px] text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-surface-dark focus:ring-2 focus:ring-surface-dark/10";
 
 export default function SubmitPage() {
-  const [title, setTitle]           = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory]     = useState<string | null>(null);
-  const [photo, setPhoto]           = useState<string | null>(null);
-  const [submitted, setSubmitted]   = useState(false);
+  const [category, setCategory] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
     return (
@@ -66,18 +66,16 @@ export default function SubmitPage() {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-canvas pb-24 sm:pb-12">
 
-      <div className="bg-surface-dark px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-3xl">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white/80">
-            Intake Form
-          </span>
-          <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
-            What needs attention?
-          </h1>
-          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/60">
-            Provide details so our civic response teams can route and resolve it effectively.
-          </p>
-        </div>
+      <div className="mx-auto max-w-3xl px-4 pt-10 pb-6 sm:px-6">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface-soft px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-gray-500">
+          Intake Form
+        </span>
+        <h1 className="mt-3 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
+          What needs attention?
+        </h1>
+        <p className="mt-2 text-base leading-relaxed text-gray-500">
+          Provide details so our civic response teams can route and resolve it effectively.
+        </p>
       </div>
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
@@ -122,21 +120,23 @@ export default function SubmitPage() {
             </div>
             <div className="p-5">
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setCategory(cat === category ? null : cat)}
-                    className={`flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3.5 text-sm font-semibold transition-all active:scale-95 ${
-                      category === cat
-                        ? "border-surface-dark bg-surface-dark text-white shadow-md"
-                        : "border-hairline bg-white text-gray-700 hover:border-gray-300 hover:bg-[#F5F5F7]"
-                    }`}
-                  >
-                    <span className="text-lg leading-none">{CATEGORY_ICONS[cat]}</span>
-                    {cat}
-                  </button>
-                ))}
+                {CATEGORIES.map((cat) => {
+                  const Icon = CATEGORY_ICONS[cat];
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setCategory(cat === category ? null : cat)}
+                      className={`flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3.5 text-sm font-semibold transition-all active:scale-95 ${category === cat
+                          ? "border-surface-dark bg-surface-dark text-white shadow-md"
+                          : "border-hairline bg-white text-gray-700 hover:border-gray-300 hover:bg-[#F5F5F7]"
+                        }`}
+                    >
+                      <span className="text-current">{Icon && <Icon className="h-6 w-6" />}</span>
+                      {cat}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -185,11 +185,10 @@ export default function SubmitPage() {
                 <button
                   type="button"
                   onClick={() => setPhoto(photo ? null : "photo.jpg")}
-                  className={`flex h-44 w-full flex-col items-center justify-center gap-3 rounded-xl transition-all ${
-                    photo
+                  className={`flex h-44 w-full flex-col items-center justify-center gap-3 rounded-xl transition-all ${photo
                       ? "border border-solid border-surface-dark bg-[#F5F5F7] text-gray-900"
                       : "border border-dashed border-hairline bg-[#FAFAFA] text-gray-400 hover:border-gray-400 hover:bg-[#F5F5F7]"
-                  }`}
+                    }`}
                 >
                   <div className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-sm ${photo ? "border-surface-dark bg-surface-dark" : "border-hairline bg-white"}`}>
                     {photo
@@ -211,7 +210,7 @@ export default function SubmitPage() {
           <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-hairline bg-white px-6 py-5 shadow-sm sm:flex-row">
             <p className="text-xs leading-relaxed text-gray-400 max-w-xs">
               By submitting you agree to our{" "}
-              <a href="#" className="font-semibold text-gray-700 hover:underline">Civic Reporting Guidelines</a>.
+              <Link href="/terms" className="font-semibold text-gray-700 hover:underline">Civic Reporting Guidelines</Link>.
             </p>
             <Button type="submit" size="lg" className="w-full gap-2 sm:w-auto px-10" onClick={() => setSubmitted(true)}>
               Submit Report

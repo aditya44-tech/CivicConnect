@@ -7,6 +7,7 @@
 import Link from "next/link";
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
+import { ArrowLeftIcon } from "@/components/icons";
 
 export default function AdminLoginPage() {
   return (
@@ -22,21 +23,6 @@ export default function AdminLoginPage() {
         <div className="relative z-10 flex h-full flex-col justify-between px-10 py-12">
           <Link href="/">
             <span className="inline-flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-[9px] bg-primary text-white">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                  <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
-                  <path d="M9 22v-4h6v4" />
-                  <path d="M8 6h.01" />
-                  <path d="M16 6h.01" />
-                  <path d="M12 6h.01" />
-                  <path d="M12 10h.01" />
-                  <path d="M12 14h.01" />
-                  <path d="M16 10h.01" />
-                  <path d="M16 14h.01" />
-                  <path d="M8 10h.01" />
-                  <path d="M8 14h.01" />
-                </svg>
-              </span>
               <span className="text-base font-bold text-white">CivicConnect</span>
             </span>
           </Link>
@@ -61,7 +47,15 @@ export default function AdminLoginPage() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
+      <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-12">
+        <Link 
+          href="/" 
+          className="absolute left-6 top-6 flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 sm:left-8 sm:top-8"
+        >
+          <ArrowLeftIcon className="h-4 w-4" />
+          Back
+        </Link>
+
         <div className="w-full max-w-sm">
           <div className="flex justify-center lg:hidden">
             <Link href="/">

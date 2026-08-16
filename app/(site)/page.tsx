@@ -201,6 +201,12 @@ export default function LandingPage() {
             <Link href="/admin" className="hover:text-gray-900 transition-colors">
               Admin
             </Link>
+            <Link href="/terms" className="hover:text-gray-900 transition-colors">
+              Terms
+            </Link>
+            <Link href="/privacy" className="hover:text-gray-900 transition-colors">
+              Privacy
+            </Link>
           </div>
         </div>
       </footer>

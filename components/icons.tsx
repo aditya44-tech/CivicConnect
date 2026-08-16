@@ -196,3 +196,55 @@ export const BuildingIcon = ({ className }: IconProps) => (
     <path d="M8 14h.01" />
   </svg>
 );
+
+export const DropletIcon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
+  </svg>
+);
+
+export const TrashIcon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <path d="M3 6h18" />
+    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+  </svg>
+);
+
+export const Volume2Icon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+  </svg>
+);
+
+export const TreePineIcon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z" />
+    <path d="M12 22v-3" />
+  </svg>
+);
+
+export const LightbulbIcon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5" />
+    <path d="M9 18h6" />
+    <path d="M10 22h4" />
+  </svg>
+);
+
+export const RouteIcon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <circle cx="6" cy="19" r="3" />
+    <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+    <circle cx="18" cy="5" r="3" />
+  </svg>
+);
+
+export const ArrowLeftIcon = ({ className }: IconProps) => (
+  <svg {...base} className={className}>
+    <path d="m12 19-7-7 7-7" />
+    <path d="M19 12H5" />
+  </svg>
+);

@@ -11,9 +11,6 @@ import {
   FileTextIcon,
   TrendingUpIcon,
   ChevronRightIcon,
-  SearchIcon,
-  BellIcon,
-  SettingsIcon,
   PlusIcon,
   LogOutIcon
 } from "@/components/icons";
@@ -66,43 +63,32 @@ export default function AdminDashboardPage() {
   return (
     <div className="bg-[#fcfcfb] min-h-screen border-l border-gray-200">
       
-      <div className="flex items-center justify-end gap-6 px-8 py-5 border-b border-gray-200 bg-white">
-        <div className="flex gap-4 text-gray-400">
-          <button aria-label="Search" className="hover:text-gray-900 transition-colors">
-            <SearchIcon className="h-5 w-5" />
-          </button>
-          <button aria-label="Notifications" className="hover:text-gray-900 transition-colors">
-            <BellIcon className="h-5 w-5" />
-          </button>
-          <button aria-label="Settings" className="hover:text-gray-900 transition-colors">
-            <SettingsIcon className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
+      <div className="px-6 pb-12 pt-6">
+        <div className="rounded-[2rem] border border-gray-200 bg-white shadow-sm overflow-hidden">
 
-      <div className="px-8 pb-12 pt-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-black tracking-tighter text-gray-900">
-              Overview
-            </h1>
-            <p className="mt-1.5 text-sm font-medium text-gray-500">
-              Welcome back. Here's what's happening today.
-            </p>
+          {/* Page header inside card */}
+          <div className="flex flex-col gap-4 border-b border-gray-100 px-8 py-7 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-black tracking-tighter text-gray-900">
+                Overview
+              </h1>
+              <p className="mt-1.5 text-sm font-medium text-gray-500">
+                Welcome back. Here's what's happening today.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="secondary" className="gap-2 bg-white text-gray-700 hover:bg-gray-50 border-gray-200">
+                <LogOutIcon className="h-4 w-4 -rotate-90" />
+                Export Report
+              </Button>
+              <Button className="gap-2 shadow-sm">
+                <PlusIcon className="h-4 w-4" />
+                New Entry
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <Button variant="secondary" className="gap-2 bg-white text-gray-700 hover:bg-gray-50 border-gray-200">
-              <LogOutIcon className="h-4 w-4 -rotate-90" />
-              Export Report
-            </Button>
-            <Button className="gap-2 shadow-sm">
-              <PlusIcon className="h-4 w-4" />
-              New Entry
-            </Button>
-          </div>
-        </div>
 
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 px-8 pt-8 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map(({ label, value, suffix, trend, trendPositive, Icon, tint }) => (
             <StatCard
               key={label}
@@ -115,9 +101,9 @@ export default function AdminDashboardPage() {
               tintClass={tint}
             />
           ))}
-        </div>
+          </div>
 
-        <div className="mt-8 rounded-2xl border border-gray-200 bg-white overflow-hidden">
+          <div className="mx-8 mt-8 mb-8 rounded-2xl border border-gray-200 overflow-hidden">
           <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
             <h2 className="text-lg font-bold tracking-tight text-gray-900">
               Recent Activity
@@ -201,6 +187,8 @@ export default function AdminDashboardPage() {
               </button>
             </div>
           </div>
+          </div>
+
         </div>
       </div>
     </div>
