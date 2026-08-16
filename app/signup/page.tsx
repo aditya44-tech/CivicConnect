@@ -4,12 +4,55 @@
  */
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
-import { ArrowLeftIcon } from "@/components/icons";
+import { ArrowLeftIcon, AlertCircleIcon } from "@/components/icons";
 
 export default function SignupPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+      const signInRes = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (!signInRes || signInRes.error) {
+        router.push("/login");
+        return;
+      }
+      router.push("/feed");
+      router.refresh();
+    } catch {
+      setError("Network error — please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 sm:p-8 lg:p-12">
       <div className="flex w-full max-w-[1040px] min-h-[680px] overflow-hidden rounded-[2rem] bg-white shadow-xl ring-1 ring-gray-200">
@@ -42,7 +85,7 @@ export default function SignupPage() {
           <div className="flex items-center gap-6 text-sm font-medium text-white/40">
             <span>No login required to browse</span>
             <span className="h-1 w-1 rounded-full bg-white/20" />
-            <span>Riverside, CA</span>
+            <span>Shirpur, Maharashtra</span>
           </div>
         </div>
       </div>
@@ -72,14 +115,23 @@ export default function SignupPage() {
 
           <form
             className="mt-8 space-y-5"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={submit}
           >
+            {error && (
+              <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                <AlertCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+                {error}
+              </div>
+            )}
             <label className="block">
               <span className="text-sm font-semibold text-gray-700">Full name</span>
               <input
                 type="text"
                 name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Kim"
+                required
                 className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
               />
             </label>
@@ -88,7 +140,10 @@ export default function SignupPage() {
               <input
                 type="email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
+                required
                 className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
               />
             </label>
@@ -97,12 +152,16 @@ export default function SignupPage() {
               <input
                 type="password"
                 name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
+                required
+                minLength={8}
                 className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
               />
             </label>
-            <Button type="submit" size="lg" className="w-full">
-              Get Started
+            <Button type="submit" size="lg" className="w-full" disabled={busy}>
+              {busy ? "Creating account…" : "Get Started"}
             </Button>
             <p className="mt-4 text-center text-xs text-gray-500">
               By signing up, I accept the{" "}

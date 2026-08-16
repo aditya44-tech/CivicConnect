@@ -1,10 +1,11 @@
 /**
  * Admin Layout - Wraps all pages under the /admin route.
- * Injects the admin Sidebar and handles mobile navigation.
+ * Guards the section behind an ADMIN role and injects the admin Sidebar.
  */
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Logo from "@/components/Logo";
+import { requireAdmin } from "@/lib/auth";
 
 const mobileNav = [
   { href: "/admin", label: "Dashboard" },
@@ -12,9 +13,10 @@ const mobileNav = [
   { href: "/admin/analytics", label: "Analytics" },
 ];
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  await requireAdmin();
   return (
     <div className="min-h-screen bg-canvas lg:pl-64">
       <Sidebar />

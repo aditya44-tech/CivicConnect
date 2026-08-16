@@ -4,13 +4,16 @@
  */
 import Navbar from "@/components/Navbar";
 import BottomTabBar from "@/components/BottomTabBar";
+import { getSessionUser } from "@/lib/auth";
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const user = await getSessionUser();
+
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar user={user} />
       <main className="pb-28 md:pb-20">{children}</main>
       <BottomTabBar />
     </div>

@@ -1,4 +1,4 @@
-import { categoryCounts, statusCounts, complaints } from "@/lib/data";
+import { getAdminStats } from "@/lib/queries";
 import DonutChart from "@/components/DonutChart";
 
 const monthly = [
@@ -14,10 +14,15 @@ const monthly = [
 
 const donutColors = ["#F43F5E", "#F97316", "#FBBF24", "#10B981", "#06B6D4", "#A855F7", "#EC4899", "#64748B"];
 
-export default function AnalyticsPage() {
-  const cats = categoryCounts();
+export default async function AnalyticsPage() {
+  const stats = await getAdminStats();
+  const cats = stats.categories;
   const total = cats.reduce((sum, c) => sum + c.count, 0);
-  const statuses = statusCounts();
+  const statuses = {
+    Pending: stats.pending,
+    "Ongoing": stats.inProgress,
+    Resolved: stats.resolved,
+  };
   
   let acc = 0;
   const stops = cats.map((c, i) => {
@@ -39,7 +44,7 @@ export default function AnalyticsPage() {
             Analytics Overview
           </h1>
           <p className="mt-1 text-sm font-medium text-gray-500">
-            Real-time trends and issue resolutions across Riverside.
+            Real-time trends and issue resolutions across Shirpur.
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm font-semibold text-gray-500">
@@ -56,7 +61,7 @@ export default function AnalyticsPage() {
         {[
           { label: "Total", value: total, color: "text-gray-900" },
           { label: "Pending", value: statuses["Pending"], color: "text-amber-600" },
-          { label: "In Progress", value: statuses["In Progress"], color: "text-violet-600" },
+          { label: "Ongoing", value: statuses["Ongoing"], color: "text-violet-600" },
           { label: "Resolved", value: statuses["Resolved"], color: "text-emerald-600" },
         ].map((item) => (
           <span
@@ -111,10 +116,7 @@ export default function AnalyticsPage() {
             <p className="text-xs text-gray-400 mt-0.5">Most community-upvoted complaints</p>
           </div>
           <ol className="space-y-2">
-            {[...complaints]
-              .sort((a, b) => b.upvotes - a.upvotes)
-              .slice(0, 5)
-              .map((c, i) => (
+            {stats.topUpvoted.map((c, i) => (
                 <li
                   key={c.id}
                   className="flex items-center gap-4 rounded-xl px-4 py-3 transition-colors hover:bg-gray-50"

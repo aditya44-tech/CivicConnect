@@ -14,20 +14,12 @@ import {
   PlusIcon,
   LogOutIcon,
 } from "@/components/icons";
-import { complaints, statusCounts, categoryCounts } from "@/lib/data";
+import { getAdminStats } from "@/lib/queries";
 import StatCard from "@/components/StatCard";
 
-export default function AdminDashboardPage() {
-  const counts = statusCounts();
-  const total = complaints.length;
-
-  // Latest 5 complaints sorted by createdAt descending
-  const recent = [...complaints]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 5);
-
-  // Category breakdown for mini widget
-  const cats = categoryCounts();
+export default async function AdminDashboardPage() {
+  const stats = await getAdminStats();
+  const { total, pending, inProgress, resolved, recent, categories: cats } = stats;
   const catTotal = cats.reduce((s, c) => s + c.count, 0);
   const catColors = [
     "#8B5CF6",
@@ -40,7 +32,7 @@ export default function AdminDashboardPage() {
     "#F43F5E",
   ];
 
-  const stats = [
+  const statCards = [
     {
       label: "TOTAL COMPLAINTS",
       value: String(total),
@@ -51,15 +43,15 @@ export default function AdminDashboardPage() {
     },
     {
       label: "PENDING",
-      value: String(counts.Pending),
+      value: String(pending),
       trend: "Requires attention",
       trendPositive: null,
       Icon: ClockIcon,
       tint: "bg-primary-soft text-primary-dark",
     },
     {
-      label: "IN PROGRESS",
-      value: String(counts["In Progress"]),
+      label: "ONGOING",
+      value: String(inProgress),
       trend: "Being resolved",
       trendPositive: true,
       Icon: TrendingUpIcon,
@@ -67,7 +59,7 @@ export default function AdminDashboardPage() {
     },
     {
       label: "RESOLVED",
-      value: String(counts.Resolved),
+      value: String(resolved),
       trend: "69% resolution rate",
       trendPositive: true,
       Icon: CheckCircleIcon,
@@ -104,7 +96,7 @@ export default function AdminDashboardPage() {
 
           {/* Stat cards */}
           <div className="grid gap-5 px-8 pt-8 sm:grid-cols-2 xl:grid-cols-4">
-            {stats.map(({ label, value, trend, trendPositive, Icon, tint }) => (
+            {statCards.map(({ label, value, trend, trendPositive, Icon, tint }) => (
               <StatCard
                 key={label}
                 label={label}

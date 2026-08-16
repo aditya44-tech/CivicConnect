@@ -1,14 +1,29 @@
 /**
  * Submit Page - The primary intake form for reporting new issues.
- * Features a multi-step visual indicator and success state handling.
+ * Uploads the photo to Cloudinary, then creates the complaint via the API.
  */
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/Button";
-import { CameraIcon, MapPinIcon, ChevronRightIcon, CheckCircleIcon, XIcon, RouteIcon, LightbulbIcon, TreePineIcon, Volume2Icon, TrashIcon, DropletIcon, AlertCircleIcon, ClipboardIcon } from "@/components/icons";
-import { CATEGORIES } from "@/lib/data";
+import MapPicker, { type LatLng } from "@/components/MapPicker";
+import {
+  CameraIcon,
+  MapPinIcon,
+  ChevronRightIcon,
+  CheckCircleIcon,
+  XIcon,
+  RouteIcon,
+  LightbulbIcon,
+  TreePineIcon,
+  Volume2Icon,
+  TrashIcon,
+  DropletIcon,
+  AlertCircleIcon,
+  ClipboardIcon,
+} from "@/components/icons";
+import { CATEGORIES, MAX_PHOTO_BYTES } from "@/lib/data";
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Roads: RouteIcon,
@@ -28,10 +43,17 @@ export default function SubmitPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string | null>(null);
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState<LatLng | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (submitted) {
+  if (submittedId) {
     return (
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-canvas px-4 py-12">
         <div className="w-full max-w-md text-center">
@@ -48,12 +70,22 @@ export default function SubmitPage() {
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button size="lg">
-              <Link href="/my-complaints">Track My Reports</Link>
+              <Link href={`/complaints/${submittedId}`}>View Report</Link>
             </Button>
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => { setSubmitted(false); setTitle(""); setDescription(""); setCategory(null); setPhoto(null); }}
+              onClick={() => {
+                setSubmittedId(null);
+                setTitle("");
+                setDescription("");
+                setCategory(null);
+                setAddress("");
+                setLocation(null);
+                setPhotoFile(null);
+                setPhotoPreview(null);
+                setPhotoError(null);
+              }}
             >
               File Another
             </Button>
@@ -62,6 +94,97 @@ export default function SubmitPage() {
       </div>
     );
   }
+
+  /** Map pin moved or auto-located: just record the detected coordinates. */
+  const handleLocationChange = (p: LatLng) => {
+    setLocation(p);
+  };
+
+  const pickPhoto = (file: File | null) => {
+    if (file && file.size > MAX_PHOTO_BYTES) {
+      // Reject oversized photos immediately with a clear message.
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setPhotoFile(null);
+      setPhotoPreview(null);
+      setPhotoError(
+        `That photo is ${(file.size / 1024).toFixed(0)} KB — the limit is 500 KB. Please pick a smaller image.`
+      );
+      return;
+    }
+    setPhotoFile(file);
+    setPhotoPreview(file ? URL.createObjectURL(file) : null);
+    setPhotoError(null);
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!title.trim() || title.trim().length < 5) {
+      setError("Please add a short title for the issue (at least 5 characters).");
+      return;
+    }
+    if (!category) {
+      setError("Please pick a category.");
+      return;
+    }
+    if (!description.trim() || description.trim().length < 10) {
+      setError("Please describe the issue in a little more detail.");
+      return;
+    }
+
+    setBusy(true);
+    setPhotoError(null);
+    try {
+      // 1. Upload the photo (optional) to Cloudinary. A failed upload never
+      //    blocks the report — the complaint goes through without the image.
+      let image: string | null = null;
+      if (photoFile) {
+        const form = new FormData();
+        form.append("file", photoFile);
+        const up = await fetch("/api/upload", { method: "POST", body: form });
+        if (up.status === 401) {
+          window.location.href = "/login";
+          return;
+        }
+        const upData = await up.json();
+        if (!up.ok) {
+          setPhotoError(upData.error ?? "Photo upload failed — the report will be submitted without it.");
+        } else {
+          image = upData.url;
+        }
+      }
+
+      // 2. Create the complaint
+      const res = await fetch("/api/complaints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim(),
+          category,
+          address: address.trim() || "Shirpur, Maharashtra",
+          latitude: location?.lat ?? null,
+          longitude: location?.lng ?? null,
+          image,
+        }),
+      });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+      setSubmittedId(data.complaint.id);
+    } catch {
+      setError("Network error — please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-canvas pb-24 sm:pb-12">
@@ -97,7 +220,13 @@ export default function SubmitPage() {
           </div>
         </div>
 
-        <form className="mt-6 space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="mt-6 space-y-6" onSubmit={submit}>
+          {error && (
+            <div className="flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+              <AlertCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+              {error}
+            </div>
+          )}
 
           <div className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-sm">
             <div className="border-b border-hairline bg-[#F5F5F7] px-5 py-3">
@@ -161,19 +290,22 @@ export default function SubmitPage() {
             <div className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-sm">
               <div className="flex items-center justify-between border-b border-hairline bg-[#F5F5F7] px-5 py-3">
                 <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gray-500">Location</span>
-                <button type="button" className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.05em] text-gray-600 hover:text-gray-900">
-                  <MapPinIcon className="h-3.5 w-3.5" />
-                  Locate Me
-                </button>
               </div>
-              <div className="bg-map-grid relative h-44 border-b border-hairline">
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-hairline bg-white p-3 shadow-md">
-                  <MapPinIcon className="h-6 w-6 text-gray-800" />
-                </span>
+              <div className="border-b border-hairline">
+                <MapPicker value={location} onChange={handleLocationChange} height="h-44" />
               </div>
-              <div className="px-5 py-3.5">
-                <p className="text-sm font-semibold text-gray-900">Civic Center Plaza</p>
-                <p className="mt-0.5 text-xs text-gray-400">Tap map to adjust pin</p>
+              <div className="space-y-2.5 px-5 py-3.5">
+                <input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Type the street address or intersection"
+                  className={`${inputBase} !py-2.5 text-sm`}
+                />
+                <p className="text-xs text-gray-400">
+                  {location
+                    ? "Location detected — type the address below."
+                    : "Tap the map or use Locate Me to detect the location."}
+                </p>
               </div>
             </div>
 
@@ -182,39 +314,72 @@ export default function SubmitPage() {
                 <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gray-500">Upload photos</span>
               </div>
               <div className="p-5">
-                <button
-                  type="button"
-                  onClick={() => setPhoto(photo ? null : "photo.jpg")}
-                  className={`flex h-44 w-full flex-col items-center justify-center gap-3 rounded-xl transition-all ${photo
-                      ? "border border-solid border-surface-dark bg-[#F5F5F7] text-gray-900"
-                      : "border border-dashed border-hairline bg-[#FAFAFA] text-gray-400 hover:border-gray-400 hover:bg-[#F5F5F7]"
-                    }`}
-                >
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-sm ${photo ? "border-surface-dark bg-surface-dark" : "border-hairline bg-white"}`}>
-                    {photo
-                      ? <XIcon className="h-5 w-5 text-white" />
-                      : <CameraIcon className="h-5 w-5 text-gray-500" />
-                    }
-                  </div>
-                  <div className="text-center">
-                    <span className={`block text-sm font-semibold ${photo ? "text-gray-900" : "text-gray-600"}`}>
-                      {photo ? "Photo Attached — tap to remove" : "Upload Photos"}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => pickPhoto(e.target.files?.[0] ?? null)}
+                />
+                {photoPreview ? (
+                  <div className="relative overflow-hidden rounded-xl border border-hairline">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={photoPreview} alt="Selected report photo" className="h-44 w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => pickPhoto(null)}
+                      aria-label="Remove photo"
+                      className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition-colors hover:bg-black/80"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </button>
+                    <span className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+                      {photoFile?.name}
                     </span>
-                    <span className="mt-1 block text-xs text-gray-400">Drag & drop or tap to browse</span>
                   </div>
-                </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex h-44 w-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-hairline bg-[#FAFAFA] text-gray-400 transition-all hover:border-gray-400 hover:bg-[#F5F5F7]"
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-white shadow-sm">
+                      <CameraIcon className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <div className="text-center">
+                      <span className="block text-sm font-semibold text-gray-600">Upload Photos</span>
+                      <span className="mt-1 block text-xs text-gray-400">Max 500 KB · Drag & drop or tap to browse</span>
+                    </div>
+                  </button>
+                )}
               </div>
             </div>
           </div>
+
+          {photoError && (
+            <div className="flex items-start gap-2.5 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-800">
+              <AlertCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                {photoError}{" "}
+                <button
+                  type="button"
+                  onClick={() => pickPhoto(null)}
+                  className="font-semibold underline underline-offset-2 hover:text-amber-950"
+                >
+                  Remove photo
+                </button>
+              </span>
+            </div>
+          )}
 
           <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-hairline bg-white px-6 py-5 shadow-sm sm:flex-row">
             <p className="text-xs leading-relaxed text-gray-400 max-w-xs">
               By submitting you agree to our{" "}
               <Link href="/terms" className="font-semibold text-gray-700 hover:underline">Civic Reporting Guidelines</Link>.
             </p>
-            <Button type="submit" size="lg" className="w-full gap-2 sm:w-auto px-10" onClick={() => setSubmitted(true)}>
-              Submit Report
-              <ChevronRightIcon className="h-4 w-4" />
+            <Button type="submit" size="lg" className="w-full gap-2 sm:w-auto px-10" disabled={busy}>
+              {busy ? "Submitting…" : "Submit Report"}
+              {!busy && <ChevronRightIcon className="h-4 w-4" />}
             </Button>
           </div>
 

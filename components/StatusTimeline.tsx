@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import type { Status } from "@/lib/data";
 import { CheckIcon } from "./icons";
 
-const steps: Status[] = ["Pending", "In Progress", "Resolved"];
+const steps: Status[] = ["Pending", "Ongoing", "Resolved"];
 
 export default function StatusTimeline({ 
   status,
@@ -59,7 +59,7 @@ export default function StatusTimeline({
                 </span>
                 <p className="mt-1 text-sm text-gray-500">
                   {step === "Pending" && "Complaint received and logged into the system."}
-                  {step === "In Progress" && "Team dispatched for site assessment."}
+                  {step === "Ongoing" && "Team dispatched for site assessment."}
                   {step === "Resolved" && "Issue has been addressed and closed."}
                 </p>
               </div>

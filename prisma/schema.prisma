@@ -1,0 +1,77 @@
+// CivicConnect — Prisma schema (NeonDB / PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CITIZEN
+  ADMIN
+}
+
+model User {
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  passwordHash String
+  role         Role        @default(CITIZEN)
+  createdAt    DateTime    @default(now())
+  complaints   Complaint[]
+  comments     Comment[]
+  upvotes      Upvote[]
+}
+
+model Complaint {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  // Category is a plain string keyed to the CATEGORIES list in lib/data.ts
+  category    String
+  // Status stores the display values used across the UI:
+  // "Pending" | "In Progress" | "Resolved"
+  status      String    @default("Pending")
+  image       String?
+  address     String
+  latitude    Float?
+  longitude   Float?
+  // Denormalized count (display) kept in sync with Upvote rows in a transaction
+  upvoteCount Int       @default(0)
+  createdAt   DateTime  @default(now())
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  comments    Comment[]
+  upvotes     Upvote[]
+
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  body        String
+  createdAt   DateTime  @default(now())
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+
+  @@index([complaintId])
+}
+
+model Upvote {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  userId      String
+  complaintId String
+  user        User      @relation(fields: [userId], references: [id])
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, complaintId])
+  @@index([complaintId])
+}

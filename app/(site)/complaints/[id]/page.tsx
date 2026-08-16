@@ -5,15 +5,14 @@ import StatusBadge from "@/components/StatusBadge";
 import StatusTimeline from "@/components/StatusTimeline";
 import UpvoteButton from "@/components/UpvoteButton";
 import CommentsSection from "@/components/CommentsSection";
+import DeleteComplaintButton from "@/components/DeleteComplaintButton";
+import MapView from "@/components/MapView";
 import Button from "@/components/Button";
 import { ChevronRightIcon, MapPinIcon, PlusIcon } from "@/components/icons";
-import { complaints } from "@/lib/data";
+import { getComplaintById } from "@/lib/queries";
+import { getSessionUser } from "@/lib/auth";
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return complaints.map((c) => ({ id: c.id }));
-}
+export const dynamic = "force-dynamic";
 
 export default async function ComplaintDetailPage({
   params,
@@ -21,8 +20,16 @@ export default async function ComplaintDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const complaint = complaints.find((c) => c.id === id);
+  const complaint = await getComplaintById(id);
   if (!complaint) notFound();
+
+  const user = await getSessionUser();
+  const canDelete = Boolean(
+    user && (user.role === "ADMIN" || user.id === complaint.authorId)
+  );
+
+  const hasCoords =
+    typeof complaint.latitude === "number" && typeof complaint.longitude === "number";
 
   return (
     <div className="min-h-screen">
@@ -47,7 +54,7 @@ export default async function ComplaintDetailPage({
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-md ring-1 ring-white/25">
                 <span className={`h-1.5 w-1.5 rounded-full ${complaint.status === 'Pending' ? 'bg-amber-400' :
-                    complaint.status === 'In Progress' ? 'bg-violet-400' :
+                    complaint.status === 'Ongoing' ? 'bg-violet-400' :
                       'bg-emerald-400'
                   }`} />
                 {complaint.status}
@@ -87,9 +94,19 @@ export default async function ComplaintDetailPage({
 
               {/* Details Section */}
               <section>
-                <div className="flex items-center justify-between border-b border-hairline pb-5">
+                <div className="flex items-center justify-between gap-4 border-b border-hairline pb-5">
                   <h2 className="text-xl font-bold tracking-tight text-gray-900">Details</h2>
-                  <UpvoteButton initial={complaint.upvotes} />
+                  <div className="flex items-center gap-3">
+                    {canDelete && (
+                      <DeleteComplaintButton
+                        complaintId={complaint.id}
+                        label="Delete"
+                        redirectTo="/feed"
+                        className="border border-red-200 bg-white text-red-600 hover:bg-red-50"
+                      />
+                    )}
+                    <UpvoteButton complaintId={complaint.id} initial={complaint.upvotes} />
+                  </div>
                 </div>
                 <p className="mt-6 text-base leading-relaxed text-gray-600">
                   {complaint.description}
@@ -114,7 +131,7 @@ export default async function ComplaintDetailPage({
 
               {/* Comments */}
               <section>
-                <CommentsSection initialComments={complaint.comments} />
+                <CommentsSection complaintId={complaint.id} initialComments={complaint.comments} />
               </section>
             </div>
 
@@ -123,23 +140,23 @@ export default async function ComplaintDetailPage({
 
               {/* Location Data Card - Flat design, no shadow */}
               <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-card">
-                <div className="bg-map-grid flex h-40 items-center justify-center border-b border-hairline">
-                  <span className="rounded-full bg-surface-card p-3 ring-1 ring-hairline shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                    <MapPinIcon className="h-6 w-6 text-primary" />
-                  </span>
-                </div>
+                <MapView latitude={complaint.latitude} longitude={complaint.longitude} />
                 <div className="p-6">
                   <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">
                     Location Data
                   </h3>
                   <dl className="mt-5 space-y-4">
                     <div className="flex items-center justify-between text-sm">
-                      <dt className="text-gray-500">District</dt>
-                      <dd className="font-semibold text-gray-900">North Ward</dd>
+                      <dt className="text-gray-500">Address</dt>
+                      <dd className="font-semibold text-gray-900">{complaint.address}</dd>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <dt className="text-gray-500">Coordinates</dt>
-                      <dd className="font-mono text-xs font-semibold text-gray-700">40.7128° N, -74.0060° W</dd>
+                      <dd className="font-mono text-xs font-semibold text-gray-700">
+                        {hasCoords
+                          ? `${complaint.latitude!.toFixed(5)}°, ${complaint.longitude!.toFixed(5)}°`
+                          : "Not pinned"}
+                      </dd>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <dt className="text-gray-500">Category</dt>
@@ -161,8 +178,10 @@ export default async function ComplaintDetailPage({
                   variant="secondary"
                   className="mt-6 w-full gap-2 border-white/20 bg-white/10 text-white hover:bg-white/20"
                 >
-                  <PlusIcon className="h-4 w-4" />
-                  Report New Issue
+                  <Link href="/submit" className="flex items-center gap-2">
+                    <PlusIcon className="h-4 w-4" />
+                    Report New Issue
+                  </Link>
                 </Button>
               </div>
 

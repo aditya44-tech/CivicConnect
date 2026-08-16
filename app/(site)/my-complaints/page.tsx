@@ -1,14 +1,21 @@
 import Link from "next/link";
 import Button from "@/components/Button";
 import ComplaintCard from "@/components/ComplaintCard";
-import StatusBadge from "@/components/StatusBadge";
-import { complaints, statusCounts } from "@/lib/data";
+import DeleteComplaintButton from "@/components/DeleteComplaintButton";
+import { getComplaintsByAuthor } from "@/lib/queries";
+import { requireUser } from "@/lib/auth";
 import { PlusIcon } from "@/components/icons";
 
-export default function MyComplaintsPage() {
-  const mine = complaints.filter((c) => c.isMine);
+export const metadata = {
+  title: "My Complaints — CivicConnect",
+  description: "Track the reports you've submitted to CivicConnect.",
+};
+
+export default async function MyComplaintsPage() {
+  const user = await requireUser();
+  const mine = await getComplaintsByAuthor(user.id);
   const pending = mine.filter((c) => c.status === "Pending").length;
-  const inProgress = mine.filter((c) => c.status === "In Progress").length;
+  const inProgress = mine.filter((c) => c.status === "Ongoing").length;
   const resolved = mine.filter((c) => c.status === "Resolved").length;
 
   return (
@@ -34,7 +41,7 @@ export default function MyComplaintsPage() {
       <div className="mt-6 grid grid-cols-3 gap-3">
         {[
           { label: "Pending", count: pending, color: "text-status-pending", bg: "bg-status-pending/10 ring-status-pending/20" },
-          { label: "In Progress", count: inProgress, color: "text-primary", bg: "bg-primary/10 ring-primary/20" },
+          { label: "Ongoing", count: inProgress, color: "text-primary", bg: "bg-primary/10 ring-primary/20" },
           { label: "Resolved", count: resolved, color: "text-status-resolved", bg: "bg-status-resolved/10 ring-status-resolved/20" },
         ].map(({ label, count, color, bg }) => (
           <div key={label} className="rounded-2xl bg-surface-card p-4 ring-1 ring-hairline shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
@@ -60,7 +67,15 @@ export default function MyComplaintsPage() {
       ) : (
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {mine.map((c) => (
-            <ComplaintCard key={c.id} complaint={c} />
+            <div key={c.id} className="relative">
+              <ComplaintCard complaint={c} />
+              <div className="absolute right-3 top-3 z-10">
+                <DeleteComplaintButton
+                  complaintId={c.id}
+                  className="bg-black/50 text-white backdrop-blur-sm hover:bg-red-600"
+                />
+              </div>
+            </div>
           ))}
         </div>
       )}

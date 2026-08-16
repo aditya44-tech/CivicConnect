@@ -9,21 +9,19 @@ interface PublicComment extends Comment {
   isOfficial?: boolean;
 }
 
-// Detect known official authors from the seed data
+// Official authors from the seed data / admin comments
 function isOfficialAuthor(author: string): boolean {
   const officials = [
-    "Riverside Public Works",
+    "Shirpur Public Works",
     "Public Works",
-    "Riverside Parks Dept.",
+    "Shirpur Parks Dept.",
     "Waste Management",
     "Traffic Signals Unit",
     "Drainage Dept.",
-    "J. Okafor",
-    "Riverside City Officials", // Also check for the name admins post under
+    "Shirpur City Officials",
+    "City Admin",
   ];
-  return officials.some((o) =>
-    author.toLowerCase().includes(o.toLowerCase())
-  );
+  return officials.some((o) => author.toLowerCase().includes(o.toLowerCase()));
 }
 
 function initials(name: string) {
@@ -36,8 +34,10 @@ function initials(name: string) {
 }
 
 export default function CommentsSection({
+  complaintId,
   initialComments,
 }: {
+  complaintId: string;
   initialComments: Comment[];
 }) {
   const [comments, setComments] = useState<PublicComment[]>(
@@ -47,15 +47,39 @@ export default function CommentsSection({
     }))
   );
   const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const post = () => {
+  const post = async () => {
     const body = draft.trim();
-    if (!body) return;
-    setComments((prev) => [
-      ...prev,
-      { author: "You", body, time: "just now", isOfficial: false },
-    ]);
-    setDraft("");
+    if (!body || busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/complaints/${complaintId}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Couldn't post the comment.");
+        return;
+      }
+      setComments((prev) => [
+        ...prev,
+        { ...data.comment, isOfficial: isOfficialAuthor(data.comment.author) },
+      ]);
+      setDraft("");
+    } catch {
+      setError("Network error — try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -95,6 +119,7 @@ export default function CommentsSection({
           ))
         )}
       </div>
+      {error && <p className="mt-3 text-sm font-medium text-red-500">{error}</p>}
       <div className="mt-5 flex items-center gap-2">
         <input
           value={draft}
@@ -105,7 +130,7 @@ export default function CommentsSection({
           placeholder="Add a comment…"
           className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
         />
-        <Button size="sm" onClick={post}>
+        <Button size="sm" onClick={post} disabled={busy}>
           Post
         </Button>
       </div>

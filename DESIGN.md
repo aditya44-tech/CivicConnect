@@ -26,7 +26,7 @@ This document captures the visual design system, tokens, and structural rules fo
     *   Soft (Backgrounds): `--color-primary-soft: #f5f3ff`
 *   **Status Colors:**
     *   **Pending:** Amber (`bg-amber-50 text-amber-700`)
-    *   **In Progress:** Violet (`bg-primary-soft text-primary-dark`)
+    *   **Ongoing:** Violet (`bg-primary-soft text-primary-dark`)
     *   **Resolved:** Emerald (`bg-emerald-50 text-emerald-700`)
     *   *Note: Status badges use text colors for trend indicators rather than heavy background blocks.*
 

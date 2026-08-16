@@ -8,9 +8,9 @@ export default function ComplaintCard({ complaint }: { complaint: Complaint }) {
   return (
     <Link
       href={`/complaints/${complaint.id}`}
-      className="group block overflow-hidden rounded-2xl bg-surface-card shadow-[0_2px_8px_rgba(0,0,0,0.04)] ring-1 ring-hairline transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] hover:ring-black/[0.08]"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-surface-card shadow-[0_2px_8px_rgba(0,0,0,0.04)] ring-1 ring-hairline transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] hover:ring-black/[0.08]"
     >
-      <div className="relative overflow-hidden aspect-[4/3] w-full">
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden">
         <Image
           src={complaint.image}
           alt={complaint.title}
@@ -27,7 +27,7 @@ export default function ComplaintCard({ complaint }: { complaint: Complaint }) {
           <StatusBadge status={complaint.status} />
         </span>
       </div>
-      <div className="px-4 pb-4 pt-4">
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-4">
         <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-gray-900 tracking-tight group-hover:text-primary transition-colors duration-200">
           {complaint.title}
         </h3>
@@ -35,6 +35,9 @@ export default function ComplaintCard({ complaint }: { complaint: Complaint }) {
           <MapPinIcon className="h-3.5 w-3.5 shrink-0 text-gray-400" />
           <span className="truncate">{complaint.address}</span>
         </p>
+        {/* Flexible spacer: cards with short content grow to match the row;
+            cards with full content are unaffected and keep their natural height */}
+        <div className="flex-1" />
         <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3 text-xs text-gray-500">
           <span className="flex items-center gap-1.5 font-bold text-gray-700">
             <ThumbsUpIcon className="h-3.5 w-3.5 text-primary" />

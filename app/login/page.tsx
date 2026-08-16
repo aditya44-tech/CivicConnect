@@ -4,12 +4,54 @@
  */
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
-import { ArrowLeftIcon } from "@/components/icons";
+import { ArrowLeftIcon, AlertCircleIcon } from "@/components/icons";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (!res || res.error) {
+        const message =
+          res && res.error === "CredentialsSignin"
+            ? "Invalid email or password."
+            : res?.error || "Invalid email or password.";
+        setError(message);
+        return;
+      }
+      const params = new URLSearchParams(window.location.search);
+      const callback = params.get("callbackUrl");
+      const target =
+        callback && callback.startsWith("/") && !callback.startsWith("//")
+          ? callback
+          : "/feed";
+      router.push(target);
+      router.refresh();
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 sm:p-8 lg:p-12">
       <div className="flex w-full max-w-[1040px] min-h-[680px] overflow-hidden rounded-[2rem] bg-white shadow-xl ring-1 ring-gray-200">
@@ -32,14 +74,14 @@ export default function LoginPage() {
                 &ldquo;Our pothole was patched in four days. That&apos;s never happened before.&rdquo;
               </blockquote>
               <p className="mt-5 text-sm font-medium text-white/50">
-                Dana Kim · Resident, Riverside
+                Dana Kim · Resident, Shirpur
               </p>
             </div>
 
             <div className="flex items-center gap-6 text-sm font-medium text-white/40">
               <span>1,200+ resolved</span>
               <span className="h-1 w-1 rounded-full bg-white/20" />
-              <span>Riverside, CA</span>
+              <span>Shirpur, Maharashtra</span>
             </div>
           </div>
         </div>
@@ -69,14 +111,23 @@ export default function LoginPage() {
 
             <form
               className="mt-8 space-y-5"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={submit}
             >
+              {error && (
+                <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                  <AlertCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+                  {error}
+                </div>
+              )}
               <label className="block">
                 <span className="text-sm font-semibold text-gray-700">Email</span>
                 <input
                   type="email"
                   name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
+                  required
                   className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
                 />
               </label>
@@ -90,13 +141,20 @@ export default function LoginPage() {
                 <input
                   type="password"
                   name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  required
                   className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
                 />
               </label>
-              <Button type="submit" size="lg" className="w-full">
-                Continue
+              <Button type="submit" size="lg" className="w-full" disabled={busy}>
+                {busy ? "Logging in…" : "Continue"}
               </Button>
+              <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Demo credentials</p>
+                <p className="mt-1 font-mono font-semibold text-gray-600">you@example.com · password123</p>
+              </div>
               <p className="mt-4 text-center text-xs text-gray-500">
                 By logging in, I accept the{" "}
                 <Link href="/terms" className="underline hover:text-gray-800">Terms & Conditions</Link>

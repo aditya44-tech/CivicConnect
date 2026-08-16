@@ -20,7 +20,7 @@ const steps = [
     number: "02",
     Icon: SearchIcon,
     title: "Track",
-    body: "Follow your report through Pending, In Progress, and Resolved — transparently.",
+    body: "Follow your report through Pending, Ongoing, and Resolved — transparently.",
   },
   {
     number: "03",
@@ -43,7 +43,7 @@ export default function LandingPage() {
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-surface-soft px-3.5 py-1.5 text-xs font-semibold text-surface-dark">
             <span className="h-1.5 w-1.5 rounded-full bg-surface-dark" />
-            Now serving Riverside, CA
+            Now serving Shirpur, Maharashtra
           </div>
           <h1 className="mt-6 text-hero text-gray-900 sm:text-[clamp(3rem,7.5vw,6rem)]">
             Report it.<br />
@@ -139,7 +139,7 @@ export default function LandingPage() {
           <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white opacity-[0.03] blur-3xl" />
           <div className="relative">
             <p className="text-xs font-bold uppercase tracking-widest text-primary">
-              Riverside, CA
+              Shirpur, Maharashtra
             </p>
             <h2 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">
               Something broken?<br />
