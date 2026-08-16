@@ -5,7 +5,7 @@ import type { Comment } from "@/lib/data";
 import Button from "./Button";
 import { ShieldCheckIcon } from "./icons";
 
-interface PublicComment extends Comment {
+interface AdminComment extends Comment {
   isOfficial?: boolean;
 }
 
@@ -19,7 +19,6 @@ function isOfficialAuthor(author: string): boolean {
     "Traffic Signals Unit",
     "Drainage Dept.",
     "J. Okafor",
-    "Riverside City Officials", // Also check for the name admins post under
   ];
   return officials.some((o) =>
     author.toLowerCase().includes(o.toLowerCase())
@@ -35,12 +34,12 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-export default function CommentsSection({
+export default function AdminCommentsSection({
   initialComments,
 }: {
   initialComments: Comment[];
 }) {
-  const [comments, setComments] = useState<PublicComment[]>(
+  const [comments, setComments] = useState<AdminComment[]>(
     initialComments.map((c) => ({
       ...c,
       isOfficial: isOfficialAuthor(c.author),
@@ -53,31 +52,41 @@ export default function CommentsSection({
     if (!body) return;
     setComments((prev) => [
       ...prev,
-      { author: "You", body, time: "just now", isOfficial: false },
+      {
+        author: "Riverside City Officials",
+        body,
+        time: "just now",
+        isOfficial: true,
+      },
     ]);
     setDraft("");
   };
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] ring-1 ring-black/[0.04]">
-      <h2 className="text-base font-bold text-gray-900">
-        Comments{" "}
-        <span className="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-500">
-          {comments.length}
-        </span>
-      </h2>
-      <div className="mt-5 space-y-5">
+    <div className="rounded-3xl bg-white p-7 shadow-sm ring-1 ring-gray-200/70">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-bold text-gray-900">
+          Comments
+          <span className="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500">
+            {comments.length}
+          </span>
+        </h2>
+      </div>
+
+      {/* Comment list */}
+      <div className="mt-6 space-y-4">
         {comments.length === 0 ? (
-          <p className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-500">
-            No comments yet. Be the first to weigh in.
+          <p className="rounded-2xl bg-gray-50 px-5 py-4 text-sm text-gray-500">
+            No comments yet.
           </p>
         ) : (
           comments.map((c, i) => (
             <div key={i} className="flex gap-3">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary-dark">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[11px] font-bold text-gray-600">
                 {initials(c.author)}
               </span>
-              <div className="min-w-0 flex-1 rounded-xl bg-gray-50 px-3.5 py-2.5">
+              <div className="min-w-0 flex-1 rounded-2xl bg-gray-50 px-4 py-3">
                 <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
                   {c.author}
                   {c.isOfficial && (
@@ -95,6 +104,8 @@ export default function CommentsSection({
           ))
         )}
       </div>
+
+      {/* Compose box — posts as official */}
       <div className="mt-5 flex items-center gap-2">
         <input
           value={draft}
@@ -102,7 +113,7 @@ export default function CommentsSection({
           onKeyDown={(e) => {
             if (e.key === "Enter") post();
           }}
-          placeholder="Add a comment…"
+          placeholder="Add an official comment…"
           className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-primary/40 focus:bg-white focus:ring-4 focus:ring-primary/10"
         />
         <Button size="sm" onClick={post}>

@@ -36,7 +36,7 @@ export default async function ComplaintDetailPage({
           sizes="100vw"
           className="object-cover opacity-60 mix-blend-overlay scale-105"
         />
-        
+
         {/* Text container bound to the same max-width as the content below */}
         <div className="absolute inset-0 flex flex-col justify-end">
           <div className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
@@ -46,16 +46,15 @@ export default async function ComplaintDetailPage({
                 {complaint.category}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-md ring-1 ring-white/25">
-                <span className={`h-1.5 w-1.5 rounded-full ${
-                  complaint.status === 'Pending' ? 'bg-amber-400' :
-                  complaint.status === 'In Progress' ? 'bg-violet-400' :
-                  'bg-emerald-400'
-                }`} />
+                <span className={`h-1.5 w-1.5 rounded-full ${complaint.status === 'Pending' ? 'bg-amber-400' :
+                    complaint.status === 'In Progress' ? 'bg-violet-400' :
+                      'bg-emerald-400'
+                  }`} />
                 {complaint.status}
               </span>
             </div>
-            
-            <h1 
+
+            <h1
               className="text-3xl font-black leading-[1.1] tracking-tighter text-white md:text-5xl lg:text-6xl max-w-[90%] line-clamp-2"
               title={complaint.title}
             >
