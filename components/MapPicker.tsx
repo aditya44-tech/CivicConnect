@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useRef } from "react";
+import type { Ref } from "react";
 import type { Map as LeafMap, Marker, LeafletMouseEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { CrosshairIcon } from "@/components/icons";
 
 export interface LatLng {
   lat: number;
   lng: number;
+}
+
+/** Lets the parent trigger geolocation from a button rendered outside the map. */
+export interface MapPickerHandle {
+  /** Detect the user's position and drop the pin. Resolves when finished. */
+  locate: () => Promise<void>;
 }
 
 const SHIRPUR: LatLng = { lat: 21.3503, lng: 74.8786 };
@@ -37,20 +43,31 @@ export default function MapPicker({
   onChange,
   height = "h-56",
   autoLocate = true,
+  ref,
 }: {
   value?: LatLng | null;
   onChange?: (p: LatLng) => void;
   height?: string;
   /** Try to detect the user's position automatically when the map loads. */
   autoLocate?: boolean;
+  ref?: Ref<MapPickerHandle>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
-  const [locating, setLocating] = useState(false);
-
   // Snapshot the value at mount so the init effect never goes stale
   const initialValueRef = useRef(value);
+  // Resolved once the map is initialized, so an early "Locate Me" click waits
+  const readyRef = useRef<{ promise: Promise<void>; resolve: () => void } | null>(null);
+  if (!readyRef.current) {
+    let resolveFn: () => void = () => {};
+    readyRef.current = {
+      promise: new Promise<void>((resolve) => {
+        resolveFn = resolve;
+      }),
+      resolve: () => resolveFn(),
+    };
+  }
 
   /** Places the marker at a position, recenters the map, and reports the pick. */
   const applyPosition = async (
@@ -67,24 +84,25 @@ export default function MapPicker({
     onChange?.(p);
   };
 
-  /** One-shot geolocation with a reasonable timeout; silently ignored if denied. */
-  const detectPosition = (
-    map: LeafMap,
-    onSuccess?: (p: LatLng) => void
-  ) => {
-    if (!navigator.geolocation) return;
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        await applyPosition(map, p);
-        onSuccess?.(p);
-        setLocating(false);
-      },
-      () => setLocating(false),
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
-    );
-  };
+  /**
+   * One-shot geolocation with a reasonable timeout. Resolves when the position
+   * is applied or the request is denied/unsupported.
+   */
+  const detectPosition = (map: LeafMap): Promise<void> =>
+    new Promise((resolve) => {
+      if (!navigator.geolocation) return resolve();
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          await applyPosition(map, {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+          resolve();
+        },
+        () => resolve(),
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+      );
+    });
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -100,6 +118,7 @@ export default function MapPicker({
         attributionControl: true,
       });
       mapRef.current = map;
+      readyRef.current?.resolve();
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
@@ -126,6 +145,7 @@ export default function MapPicker({
 
     return () => {
       cancelled = true;
+      readyRef.current?.resolve();
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -147,26 +167,21 @@ export default function MapPicker({
     })();
   }, [value]);
 
-  const locateMe = () => {
-    const map = mapRef.current;
-    if (!map || locating) return;
-    detectPosition(map);
-  };
+  useImperativeHandle(
+    ref,
+    () => ({
+      async locate() {
+        await readyRef.current?.promise;
+        const map = mapRef.current;
+        if (map) await detectPosition(map);
+      },
+    }),
+    []
+  );
 
   return (
     <div className="relative">
       <div ref={containerRef} className={`${height} w-full rounded-xl bg-surface-soft`} />
-      <button
-        type="button"
-        onClick={locateMe}
-        disabled={locating}
-        className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-hairline bg-white/95 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-700 shadow-sm backdrop-blur transition-colors hover:bg-white disabled:opacity-70"
-      >
-        <CrosshairIcon
-          className={`h-3.5 w-3.5 text-primary ${locating ? "animate-spin" : ""}`}
-        />
-        {locating ? "Locating…" : "Locate Me"}
-      </button>
       {value && (
         <span className="absolute bottom-3 left-3 rounded-full bg-black/60 px-3 py-1 font-mono text-[11px] font-semibold text-white backdrop-blur-sm">
           {value.lat.toFixed(5)}, {value.lng.toFixed(5)}

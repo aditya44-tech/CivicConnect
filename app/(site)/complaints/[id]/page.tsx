@@ -142,9 +142,22 @@ export default async function ComplaintDetailPage({
               <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-card">
                 <MapView latitude={complaint.latitude} longitude={complaint.longitude} />
                 <div className="p-6">
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">
-                    Location Data
-                  </h3>
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">
+                      Location Data
+                    </h3>
+                    {hasCoords && (
+                      <a
+                        href={`https://www.google.com/maps?q=${complaint.latitude},${complaint.longitude}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 rounded-full bg-surface-soft px-3 py-1 text-[11px] font-semibold text-gray-600 transition-colors hover:text-primary hover:ring-1 hover:ring-primary/30"
+                      >
+                        <MapPinIcon className="h-3.5 w-3.5 text-primary" />
+                        Open in Google Maps
+                      </a>
+                    )}
+                  </div>
                   <dl className="mt-5 space-y-4">
                     <div className="flex items-center justify-between text-sm">
                       <dt className="text-gray-500">Address</dt>

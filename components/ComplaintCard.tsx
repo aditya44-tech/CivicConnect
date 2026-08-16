@@ -49,4 +49,3 @@ export default function ComplaintCard({ complaint }: { complaint: Complaint }) {
     </Link>
   );
 }
-

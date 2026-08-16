@@ -7,7 +7,7 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/Button";
-import MapPicker, { type LatLng } from "@/components/MapPicker";
+import MapPicker, { type LatLng, type MapPickerHandle } from "@/components/MapPicker";
 import {
   CameraIcon,
   MapPinIcon,
@@ -22,6 +22,7 @@ import {
   DropletIcon,
   AlertCircleIcon,
   ClipboardIcon,
+  CrosshairIcon,
 } from "@/components/icons";
 import { CATEGORIES, MAX_PHOTO_BYTES } from "@/lib/data";
 
@@ -51,7 +52,9 @@ export default function SubmitPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [locating, setLocating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mapPickerRef = useRef<MapPickerHandle>(null);
 
   if (submittedId) {
     return (
@@ -98,6 +101,17 @@ export default function SubmitPage() {
   /** Map pin moved or auto-located: just record the detected coordinates. */
   const handleLocationChange = (p: LatLng) => {
     setLocation(p);
+  };
+
+  /** "Locate Me" in the Location header — drives the map's geolocation. */
+  const handleLocate = async () => {
+    if (locating) return;
+    setLocating(true);
+    try {
+      await mapPickerRef.current?.locate();
+    } finally {
+      setLocating(false);
+    }
   };
 
   const pickPhoto = (file: File | null) => {
@@ -290,9 +304,25 @@ export default function SubmitPage() {
             <div className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-sm">
               <div className="flex items-center justify-between border-b border-hairline bg-[#F5F5F7] px-5 py-3">
                 <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gray-500">Location</span>
+                <button
+                  type="button"
+                  onClick={handleLocate}
+                  disabled={locating}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.05em] text-gray-600 transition-colors hover:text-gray-900 disabled:opacity-60"
+                >
+                  <CrosshairIcon
+                    className={`h-3.5 w-3.5 text-primary ${locating ? "animate-spin" : ""}`}
+                  />
+                  {locating ? "Locating…" : "Locate Me"}
+                </button>
               </div>
               <div className="border-b border-hairline">
-                <MapPicker value={location} onChange={handleLocationChange} height="h-44" />
+                <MapPicker
+                  ref={mapPickerRef}
+                  value={location}
+                  onChange={handleLocationChange}
+                  height="h-44"
+                />
               </div>
               <div className="space-y-2.5 px-5 py-3.5">
                 <input
