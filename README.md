@@ -6,24 +6,6 @@ CivicConnect is a modern platform for citizens to report local issues, track the
 
 Next.js uses a **file-system based router**, meaning the structure of the `app/` folder strictly defines the application's URLs and layouts.
 
-```text
-app/
-├── (site)/         # Route Group for citizen-facing pages. Adds Navbar & Footer layouts.
-│   ├── feed/       # -> /feed (Community complaints list)
-│   ├── submit/     # -> /submit (Form to report an issue)
-│   ├── my-complaints/ # -> /my-complaints (User dashboard)
-│   └── complaints/ # -> /complaints/[id] (Detailed view of a single issue)
-│
-├── admin/          # Admin namespace. Uses a Sidebar layout instead of the Navbar.
-│   ├── analytics/  # -> /admin/analytics (Platform statistics)
-│   └── complaints/ # -> /admin/complaints (Admin table of all issues)
-│
-├── login/          # -> /login (Auth page, no global layouts, full screen)
-├── signup/         # -> /signup (Auth page, no global layouts, full screen)
-│
-├── globals.css     # Global styles and design system tokens
-└── layout.tsx      # Root HTML layout (shared across the entire application)
-```
 
 ## How It Works
 
