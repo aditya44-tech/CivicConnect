@@ -17,7 +17,8 @@ export default function FeedClient({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [status, setStatus] = useState<Status | "All">("All");
-  const [showWelcome, setShowWelcome] = useState(true);
+
+
 
   const counts = useMemo(() => {
     const c: Record<Status, number> = { Pending: 0, "Ongoing": 0, Resolved: 0 };
@@ -39,25 +40,8 @@ export default function FeedClient({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 pb-24 sm:px-6 sm:pb-12">
-      {showWelcome && (
-        <div className="mb-8 flex flex-col items-start justify-between gap-6 rounded-2xl bg-surface-card px-8 py-7 shadow-sm ring-1 ring-hairline sm:flex-row sm:items-center">
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-gray-900">Welcome to CivicConnect</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-600">
-              This is your community hub. Browse nearby issues, or tap{" "}
-              <span className="font-semibold text-primary">New Report</span> to submit a problem.
-            </p>
-          </div>
-          <button
-            type="button"
-            className="shrink-0 rounded-full border border-hairline px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-500 transition-colors hover:bg-surface-soft hover:text-gray-900"
-            onClick={() => setShowWelcome(false)}
-            aria-label="Dismiss welcome message"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
+
+
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>

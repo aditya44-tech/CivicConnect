@@ -10,7 +10,6 @@ import { requireAdmin } from "@/lib/auth";
 const mobileNav = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/complaints", label: "Complaints" },
-  { href: "/admin/analytics", label: "Analytics" },
 ];
 
 export default async function AdminLayout({

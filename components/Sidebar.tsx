@@ -8,7 +8,6 @@ import { BarChartIcon, FileTextIcon, LogOutIcon, SettingsIcon } from "./icons";
 const nav = [
   { href: "/admin", label: "Dashboard", Icon: SettingsIcon, exact: true },
   { href: "/admin/complaints", label: "Complaints", Icon: FileTextIcon },
-  { href: "/admin/analytics", label: "Analytics", Icon: BarChartIcon },
 ];
 
 export default function Sidebar() {
@@ -35,11 +34,10 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                active
+              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${active
                   ? "bg-primary text-white"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`}
+                }`}
             >
               <item.Icon className="h-4.5 w-4.5" />
               {item.label}

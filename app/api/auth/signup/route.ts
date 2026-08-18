@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+
 import { Role } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
 import { isDemoMode } from "@/lib/queries";
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       data: {
         name,
         email,
-        passwordHash: bcrypt.hashSync(password, 10),
+        password: password,
         role: Role.CITIZEN,
       },
       select: { id: true, name: true, email: true },

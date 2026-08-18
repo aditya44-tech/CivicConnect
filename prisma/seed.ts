@@ -5,7 +5,7 @@
  * Run with:  npx prisma db seed
  */
 import { PrismaClient, Role } from "@prisma/client";
-import bcrypt from "bcryptjs";
+
 import { complaints, type Status } from "../lib/data";
 
 const prisma = new PrismaClient();
@@ -45,7 +45,7 @@ async function main() {
       create: {
         name,
         email: `${slug(name)}@example.com`,
-        passwordHash: bcrypt.hashSync("password123", 10),
+        password: "password123",
         role: Role.CITIZEN,
       },
     });
@@ -58,7 +58,7 @@ async function main() {
     create: {
       name: "City Admin",
       email: "admin@riverside.gov",
-      passwordHash: bcrypt.hashSync("admin123", 10),
+      password: "admin123",
       role: Role.ADMIN,
     },
   });

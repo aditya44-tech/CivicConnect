@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getServerSession } from "next-auth";
-import bcrypt from "bcryptjs";
+
 import { redirect } from "next/navigation";
 import { getPrisma } from "@/lib/prisma";
 import { isDemoMode } from "@/lib/queries";
@@ -29,8 +29,7 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email.toLowerCase().trim() },
         });
         if (!user) return null;
-        const ok = await bcrypt.compare(credentials.password, user.passwordHash);
-        if (!ok) return null;
+        if (credentials.password !== user.password) return null;
         return { id: user.id, name: user.name, email: user.email, role: user.role };
       },
     }),

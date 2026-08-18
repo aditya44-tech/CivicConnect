@@ -217,22 +217,7 @@ export default function SubmitPage() {
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
 
-        <div className="mt-8 flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-gray-400">
-          <div className="flex items-center gap-1.5 text-surface-dark">
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-surface-dark text-[9px] text-white">1</span>
-            <span>Describe</span>
-          </div>
-          <span className="h-px w-6 bg-hairline" />
-          <div className="flex items-center gap-1.5">
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#E0E0E0] text-[9px] text-white">2</span>
-            <span>Category</span>
-          </div>
-          <span className="h-px w-6 bg-hairline" />
-          <div className="flex items-center gap-1.5">
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#E0E0E0] text-[9px] text-white">3</span>
-            <span>Location</span>
-          </div>
-        </div>
+
 
         <form className="mt-6 space-y-6" onSubmit={submit}>
           {error && (

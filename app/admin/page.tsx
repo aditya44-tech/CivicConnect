@@ -156,11 +156,11 @@ export default async function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Mini Category Breakdown */}
+            {/* Category Share */}
             <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
               <div className="border-b border-gray-200 px-6 py-5">
                 <h2 className="text-lg font-bold tracking-tight text-gray-900">
-                  By Category
+                  Category Share
                 </h2>
                 <p className="mt-0.5 text-[11px] font-medium text-gray-400">
                   Issue distribution snapshot
@@ -196,16 +196,6 @@ export default async function AdminDashboardPage() {
                     </div>
                   );
                 })}
-              </div>
-
-              <div className="border-t border-gray-100 bg-gray-50/50 px-6 py-3.5">
-                <Link
-                  href="/admin/analytics"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary-dark"
-                >
-                  Full analytics
-                  <ChevronRightIcon className="h-3.5 w-3.5" />
-                </Link>
               </div>
             </div>
 
