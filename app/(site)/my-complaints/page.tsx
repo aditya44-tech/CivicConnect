@@ -7,7 +7,7 @@ import { requireUser } from "@/lib/auth";
 import { PlusIcon } from "@/components/icons";
 
 export const metadata = {
-  title: "My Complaints — CivicConnect",
+  title: "My Complaints | CivicConnect",
   description: "Track the reports you've submitted to CivicConnect.",
 };
 

@@ -2,7 +2,7 @@ import AdminComplaintsTable from "@/components/AdminComplaintsTable";
 import { getComplaints } from "@/lib/queries";
 
 export const metadata = {
-  title: "Complaints — Admin — CivicConnect",
+  title: "Complaints | Admin | CivicConnect",
 };
 
 export default async function AdminComplaintsPage() {

@@ -2,7 +2,7 @@ import FeedClient from "@/components/FeedClient";
 import { getComplaints } from "@/lib/queries";
 
 export const metadata = {
-  title: "Community Feed — CivicConnect",
+  title: "Community Feed | CivicConnect",
   description:
     "Browse reported issues in your neighborhood and track their resolution progress.",
 };
