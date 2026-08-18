@@ -4,15 +4,12 @@
  */
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
-import Button from "@/components/Button";
 import {
   ClockIcon,
   CheckCircleIcon,
   FileTextIcon,
   TrendingUpIcon,
   ChevronRightIcon,
-  PlusIcon,
-  LogOutIcon,
 } from "@/components/icons";
 import { getAdminStats } from "@/lib/queries";
 import StatCard from "@/components/StatCard";
@@ -82,16 +79,7 @@ export default async function AdminDashboardPage() {
                 Welcome back. Here&apos;s what&apos;s happening today.
               </p>
             </div>
-            <div className="flex gap-3">
-              <Button variant="secondary" className="gap-2 bg-white text-gray-700 hover:bg-gray-50 border-gray-200">
-                <LogOutIcon className="h-4 w-4 -rotate-90" />
-                Export Report
-              </Button>
-              <Button className="gap-2 shadow-sm">
-                <PlusIcon className="h-4 w-4" />
-                New Entry
-              </Button>
-            </div>
+
           </div>
 
           {/* Stat cards */}

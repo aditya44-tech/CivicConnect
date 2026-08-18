@@ -3,7 +3,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import StatusBadge from "@/components/StatusBadge";
 import StatusTimeline from "@/components/StatusTimeline";
-import UpvoteButton from "@/components/UpvoteButton";
 import CommentsSection from "@/components/CommentsSection";
 import DeleteComplaintButton from "@/components/DeleteComplaintButton";
 import MapView from "@/components/MapView";
@@ -105,7 +104,6 @@ export default async function ComplaintDetailPage({
                         className="border border-red-200 bg-white text-red-600 hover:bg-red-50"
                       />
                     )}
-                    <UpvoteButton complaintId={complaint.id} initial={complaint.upvotes} />
                   </div>
                 </div>
                 <p className="mt-6 text-base leading-relaxed text-gray-600">

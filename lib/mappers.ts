@@ -54,7 +54,6 @@ export function toComplaintUI(
     description: row.description,
     category: row.category,
     status: row.status as Complaint["status"],
-    upvotes: row.upvoteCount,
     image: row.image ?? "/images/c1.jpg",
     address: row.address,
     latitude: row.latitude,

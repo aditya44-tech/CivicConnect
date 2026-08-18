@@ -85,7 +85,6 @@ async function main() {
         address: c.address,
         latitude: c.latitude ?? null,
         longitude: c.longitude ?? null,
-        upvoteCount: c.upvotes,
         createdAt: created,
         authorId,
       },
@@ -102,14 +101,6 @@ async function main() {
           complaintId: complaint.id,
           authorId: commentAuthorId,
         },
-      });
-    }
-
-    // Upvote rows for every other user (keeps the toggle working on seed data)
-    const voters = Object.values(users).filter((id) => id !== authorId);
-    for (const voterId of voters) {
-      await prisma.upvote.create({
-        data: { complaintId: complaint.id, userId: voterId },
       });
     }
   }

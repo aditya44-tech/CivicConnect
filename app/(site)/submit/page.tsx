@@ -402,11 +402,7 @@ export default function SubmitPage() {
             </div>
           )}
 
-          <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-hairline bg-white px-6 py-5 shadow-sm sm:flex-row">
-            <p className="text-xs leading-relaxed text-gray-400 max-w-xs">
-              By submitting you agree to our{" "}
-              <Link href="/terms" className="font-semibold text-gray-700 hover:underline">Civic Reporting Guidelines</Link>.
-            </p>
+          <div className="flex justify-center rounded-2xl border border-hairline bg-white px-6 py-5 shadow-sm">
             <Button type="submit" size="lg" className="w-full gap-2 sm:w-auto px-10" disabled={busy}>
               {busy ? "Submitting…" : "Submit Report"}
               {!busy && <ChevronRightIcon className="h-4 w-4" />}

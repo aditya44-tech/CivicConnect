@@ -106,7 +106,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="mt-1.5 text-sm text-gray-500">
-              Log in to track your reports and upvotes.
+              Log in to track your reports.
             </p>
 
             <form
@@ -155,12 +155,6 @@ export default function LoginPage() {
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Demo credentials</p>
                 <p className="mt-1 font-mono font-semibold text-gray-600">you@example.com · password123</p>
               </div>
-              <p className="mt-4 text-center text-xs text-gray-500">
-                By logging in, I accept the{" "}
-                <Link href="/terms" className="underline hover:text-gray-800">Terms & Conditions</Link>
-                {" "}and{" "}
-                <Link href="/privacy" className="underline hover:text-gray-800">Privacy Policy</Link>.
-              </p>
             </form>
 
             <p className="mt-6 text-center text-sm text-gray-500">

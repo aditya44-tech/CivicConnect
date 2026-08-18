@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Complaint } from "@/lib/data";
 import StatusBadge from "./StatusBadge";
-import { MapPinIcon, ThumbsUpIcon } from "./icons";
+import { MapPinIcon } from "./icons";
 
 export default function ComplaintCard({ complaint }: { complaint: Complaint }) {
   return (
@@ -38,12 +38,8 @@ export default function ComplaintCard({ complaint }: { complaint: Complaint }) {
         {/* Flexible spacer: cards with short content grow to match the row;
             cards with full content are unaffected and keep their natural height */}
         <div className="flex-1" />
-        <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3 text-xs text-gray-500">
-          <span className="flex items-center gap-1.5 font-bold text-gray-700">
-            <ThumbsUpIcon className="h-3.5 w-3.5 text-primary" />
-            {complaint.upvotes}
-          </span>
-          <span className="text-[11px]">{complaint.createdAt}</span>
+        <div className="mt-3 flex items-center justify-end border-t border-hairline pt-3 text-[11px] text-gray-500">
+          {complaint.createdAt}
         </div>
       </div>
     </Link>

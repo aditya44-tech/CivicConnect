@@ -7,7 +7,7 @@ import DeleteComplaintButton from "@/components/DeleteComplaintButton";
 import { SearchIcon, ChevronRightIcon } from "@/components/icons";
 import type { Complaint, Status } from "@/lib/data";
 
-type Sort = "newest" | "oldest" | "upvotes";
+type Sort = "newest" | "oldest";
 
 type Tab = "All" | Status;
 
@@ -43,7 +43,6 @@ export default function AdminComplaintsTable({
         : new Date(c.createdAt).getTime();
 
     return filtered.sort((a, b) => {
-      if (sort === "upvotes") return b.upvotes - a.upvotes;
       const diff = time(a) - time(b);
       return sort === "oldest" ? diff : -diff;
     });
@@ -100,7 +99,6 @@ export default function AdminComplaintsTable({
         >
           <option value="newest">Newest first</option>
           <option value="oldest">Oldest first</option>
-          <option value="upvotes">Most upvoted</option>
         </select>
       </div>
 
@@ -112,7 +110,6 @@ export default function AdminComplaintsTable({
               <th className="px-6 py-4">Complaint</th>
               <th className="px-4 py-4">Category</th>
               <th className="px-4 py-4">Status</th>
-              <th className="px-4 py-4">Upvotes</th>
               <th className="px-4 py-4">Reported</th>
               <th className="px-4 py-4 text-right">Actions</th>
             </tr>
@@ -145,9 +142,6 @@ export default function AdminComplaintsTable({
                 <td className="px-4 py-4 text-gray-600">{c.category}</td>
                 <td className="px-4 py-4">
                   <StatusBadge status={c.status} />
-                </td>
-                <td className="px-4 py-4 font-semibold text-gray-700">
-                  {c.upvotes}
                 </td>
                 <td className="px-4 py-4 text-gray-500">{c.createdAt}</td>
                 <td className="px-4 py-4">
@@ -189,7 +183,7 @@ export default function AdminComplaintsTable({
                 {c.title}
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                {c.upvotes} upvotes · {c.createdAt}
+                {c.createdAt}
               </p>
               <div className="mt-2 flex items-center justify-between">
                 <StatusBadge status={c.status} />

@@ -1,6 +1,6 @@
 # CivicConnect
 
-CivicConnect is a modern platform for citizens to report local issues, track their resolution, and upvote community concerns.
+CivicConnect is a modern platform for citizens to report local issues and track their resolution.
 
 ## Tech Stack
 
@@ -72,7 +72,7 @@ app/
 ├── signup/         # -> /signup (Creates a citizen account)
 ├── admin-login/    # -> /admin-login (ADMIN-role sign-in)
 │
-├── api/            # Route handlers (complaints, upvote, comments, upload, auth)
+├── api/            # Route handlers (complaints, comments, upload, auth)
 ├── globals.css     # Global styles and design system tokens
 └── layout.tsx      # Root HTML layout
 
@@ -84,7 +84,7 @@ lib/
 └── cloudinary.ts   # Cloudinary client
 
 prisma/
-├── schema.prisma   # User / Complaint / Comment / Upvote models
+├── schema.prisma   # User / Complaint / Comment models
 └── seed.ts         # Demo data loader
 ```
 

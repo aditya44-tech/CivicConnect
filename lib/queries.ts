@@ -115,7 +115,6 @@ export interface AdminStats {
   resolved: number;
   categories: { category: string; count: number }[];
   recent: Complaint[];
-  topUpvoted: Complaint[];
 }
 
 /** Aggregate stats for the admin dashboard + analytics pages. */
@@ -135,13 +134,10 @@ export async function getAdminStats(): Promise<AdminStats> {
       recent: [...mockComplaints]
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 5),
-      topUpvoted: [...mockComplaints]
-        .sort((a, b) => b.upvotes - a.upvotes)
-        .slice(0, 5),
     };
   }
 
-  const [total, pending, inProgress, resolved, grouped, recentRows, topRows] =
+  const [total, pending, inProgress, resolved, grouped, recentRows] =
     await Promise.all([
       db().complaint.count(),
       db().complaint.count({ where: { status: "Pending" } }),
@@ -153,11 +149,6 @@ export async function getAdminStats(): Promise<AdminStats> {
         orderBy: { createdAt: "desc" },
         take: 5,
       }),
-      db().complaint.findMany({
-        include: { author: true, comments: { include: { author: true } } },
-        orderBy: { upvoteCount: "desc" },
-        take: 5,
-      }),
     ]);
 
   return {
@@ -167,7 +158,6 @@ export async function getAdminStats(): Promise<AdminStats> {
     resolved,
     categories: grouped.map((g) => ({ category: g.category, count: g._count })),
     recent: recentRows.map((r) => toComplaintUI(r)),
-    topUpvoted: topRows.map((r) => toComplaintUI(r)),
   };
 }
 
@@ -200,35 +190,6 @@ export async function createComplaint(data: {
   return toComplaintUI(row);
 }
 
-/** Toggle an upvote; keeps the denormalized count in sync. Returns new count + state. */
-export async function toggleUpvote(
-  complaintId: string,
-  userId: string
-): Promise<{ count: number; upvoted: boolean }> {
-  if (isDemoMode()) {
-    throw demoModeError("upvoting");
-  }
-  const existing = await db().upvote.findUnique({
-    where: { userId_complaintId: { userId, complaintId } },
-  });
-
-  const count = await db().$transaction(async (tx) => {
-    if (existing) {
-      await tx.upvote.delete({ where: { id: existing.id } });
-    } else {
-      await tx.upvote.create({ data: { userId, complaintId } });
-    }
-    const complaint = await tx.complaint.update({
-      where: { id: complaintId },
-      data: { upvoteCount: { increment: existing ? -1 : 1 } },
-      select: { upvoteCount: true },
-    });
-    return complaint.upvoteCount;
-  });
-
-  return { count, upvoted: !existing };
-}
-
 export async function addComment(
   complaintId: string,
   authorId: string,
@@ -258,7 +219,7 @@ export async function updateComplaintStatus(
 }
 
 /**
- * Deletes a complaint. Comments and upvotes cascade automatically
+ * Deletes a complaint. Comments cascade automatically
  * (onDelete: Cascade in the schema).
  */
 export async function deleteComplaint(id: string): Promise<void> {

@@ -44,7 +44,7 @@ export default function FeedClient({
           <div>
             <h2 className="text-xl font-bold tracking-tight text-gray-900">Welcome to CivicConnect</h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-600">
-              This is your community hub. Browse nearby issues, upvote the ones you care about, or tap{" "}
+              This is your community hub. Browse nearby issues, or tap{" "}
               <span className="font-semibold text-primary">New Report</span> to submit a problem.
             </p>
           </div>

@@ -163,12 +163,6 @@ export default function SignupPage() {
             <Button type="submit" size="lg" className="w-full" disabled={busy}>
               {busy ? "Creating account…" : "Get Started"}
             </Button>
-            <p className="mt-4 text-center text-xs text-gray-500">
-              By signing up, I accept the{" "}
-              <Link href="/terms" className="underline hover:text-gray-800">Terms & Conditions</Link>
-              {" "}and{" "}
-              <Link href="/privacy" className="underline hover:text-gray-800">Privacy Policy</Link>.
-            </p>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-500">

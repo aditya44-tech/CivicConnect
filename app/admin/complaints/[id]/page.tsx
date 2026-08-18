@@ -65,7 +65,6 @@ export default async function AdminComplaintPage({
                 </span>
                 <span>Reported {complaint.createdAt}</span>
                 <span>by {complaint.author}</span>
-                <span>{complaint.upvotes} upvotes</span>
               </p>
               <p className="mt-5 leading-relaxed text-gray-600">
                 {complaint.description}

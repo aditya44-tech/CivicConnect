@@ -30,12 +30,6 @@ const steps = [
   },
 ];
 
-const stats = [
-  { value: "1,200+", label: "issues resolved" },
-  { value: "3.8d", label: "avg. resolution" },
-  { value: "10", label: "complaints tracked" },
-];
-
 export default function LandingPage() {
   return (
     <div className="overflow-hidden">
@@ -61,15 +55,6 @@ export default function LandingPage() {
             <Button size="lg" variant="secondary" className="border-hairline bg-surface-card text-primary hover:bg-surface-soft">
               <Link href="/feed">See public feed</Link>
             </Button>
-          </div>
-
-          <div className="mt-10 flex items-center gap-6 border-t border-hairline pt-7">
-            {stats.map((s) => (
-              <div key={s.label}>
-                <p className="text-xl font-black tracking-tight text-gray-900">{s.value}</p>
-                <p className="text-xs font-medium text-gray-400">{s.label}</p>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -200,12 +185,6 @@ export default function LandingPage() {
             </Link>
             <Link href="/admin" className="hover:text-gray-900 transition-colors">
               Admin
-            </Link>
-            <Link href="/terms" className="hover:text-gray-900 transition-colors">
-              Terms
-            </Link>
-            <Link href="/privacy" className="hover:text-gray-900 transition-colors">
-              Privacy
             </Link>
           </div>
         </div>
