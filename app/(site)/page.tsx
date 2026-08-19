@@ -33,8 +33,58 @@ const steps = [
 export default function LandingPage() {
   return (
     <div className="overflow-hidden">
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-8 sm:px-6 lg:grid-cols-2 lg:pt-16">
-        <div>
+      <section className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-20 pt-8 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:pt-16">
+        {/* Cards column — order-1 so it renders above the text on mobile */}
+        <div className="relative order-1 flex items-center justify-center pb-0 lg:order-2">
+          {/* Desktop: original stacked absolute layout */}
+          <div className="hidden lg:block w-full max-w-sm">
+            <div className="overflow-hidden rounded-2xl bg-surface-soft shadow-[0_20px_60px_rgba(0,0,0,0.10)] ring-1 ring-hairline">
+              <div className="flex items-center gap-1.5 bg-surface-card px-4 py-2.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
+                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
+                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
+                <span className="mx-auto rounded-md bg-canvas/70 px-16 py-1 text-[10px] font-medium text-gray-400">
+                  civicconnect.app/complaints
+                </span>
+              </div>
+              <div className="bg-canvas p-3">
+                <ComplaintCard complaint={complaints[0]} />
+              </div>
+            </div>
+            <div className="absolute -bottom-6 -left-8 w-56 overflow-hidden rounded-2xl bg-surface-card shadow-[0_8px_24px_rgba(0,0,0,0.08)] ring-1 ring-hairline">
+              <div className="bg-canvas p-2.5">
+                <ComplaintCard complaint={complaints[3]} />
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile: overlapping cards */}
+          <div className="relative block lg:hidden w-[85%] max-w-[280px] mx-auto mt-4 mb-6">
+            {/* Main browser-frame card */}
+            <div className="w-full overflow-hidden rounded-2xl bg-surface-soft shadow-[0_16px_48px_rgba(0,0,0,0.10)] ring-1 ring-hairline">
+              <div className="flex items-center gap-1 bg-surface-card px-3 py-2">
+                <span className="h-2 w-2 rounded-full bg-hairline" />
+                <span className="h-2 w-2 rounded-full bg-hairline" />
+                <span className="h-2 w-2 rounded-full bg-hairline" />
+                <span className="mx-auto rounded bg-canvas/70 px-4 py-0.5 text-[9px] font-medium text-gray-400">
+                  civicconnect.app/complaints
+                </span>
+              </div>
+              <div className="bg-canvas p-2.5">
+                <ComplaintCard complaint={complaints[0]} />
+              </div>
+            </div>
+            {/* Second overlapping card */}
+            <div className="absolute -bottom-6 -left-4 w-44 overflow-hidden rounded-2xl bg-surface-card shadow-[0_8px_24px_rgba(0,0,0,0.08)] ring-1 ring-hairline">
+              <div className="bg-canvas p-2">
+                <ComplaintCard complaint={complaints[3]} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Text column — order-2 so it renders below the cards on mobile */}
+        <div className="order-2 lg:order-1">
           <div className="inline-flex items-center gap-2 rounded-full bg-surface-soft px-3.5 py-1.5 text-xs font-semibold text-surface-dark">
             <span className="h-1.5 w-1.5 rounded-full bg-surface-dark" />
             Now serving Shirpur, Maharashtra
@@ -55,29 +105,6 @@ export default function LandingPage() {
             <Button size="lg" variant="secondary" className="border-hairline bg-surface-card text-primary hover:bg-surface-soft">
               <Link href="/feed">See public feed</Link>
             </Button>
-          </div>
-        </div>
-
-        <div className="relative hidden lg:flex lg:items-center lg:justify-center">
-          <div className="w-full max-w-sm">
-            <div className="overflow-hidden rounded-2xl bg-surface-soft shadow-[0_20px_60px_rgba(0,0,0,0.10)] ring-1 ring-hairline">
-              <div className="flex items-center gap-1.5 bg-surface-card px-4 py-2.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
-                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
-                <span className="h-2.5 w-2.5 rounded-full bg-hairline" />
-                <span className="mx-auto rounded-md bg-canvas/70 px-16 py-1 text-[10px] font-medium text-gray-400">
-                  civicconnect.app/complaints
-                </span>
-              </div>
-              <div className="bg-canvas p-3">
-                <ComplaintCard complaint={complaints[0]} />
-              </div>
-            </div>
-            <div className="absolute -bottom-6 -left-8 w-56 overflow-hidden rounded-2xl bg-surface-card shadow-[0_8px_24px_rgba(0,0,0,0.08)] ring-1 ring-hairline">
-              <div className="bg-canvas p-2.5">
-                <ComplaintCard complaint={complaints[3]} />
-              </div>
-            </div>
           </div>
         </div>
       </section>

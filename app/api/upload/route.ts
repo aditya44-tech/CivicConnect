@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     }
     if (file.size > MAX_PHOTO_BYTES) {
       return NextResponse.json(
-        { error: "Photo must be under 500 KB." },
+        { error: "Photo must be under 1 MB." },
         { status: 400 }
       );
     }

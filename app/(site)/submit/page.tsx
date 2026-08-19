@@ -121,7 +121,7 @@ export default function SubmitPage() {
       setPhotoFile(null);
       setPhotoPreview(null);
       setPhotoError(
-        `That photo is ${(file.size / 1024).toFixed(0)} KB — the limit is 500 KB. Please pick a smaller image.`
+        `That photo is ${(file.size / 1024).toFixed(0)} KB — the limit is 1 MB. Please pick a smaller image.`
       );
       return;
     }
@@ -363,7 +363,7 @@ export default function SubmitPage() {
                     </div>
                     <div className="text-center">
                       <span className="block text-sm font-semibold text-gray-600">Upload Photos</span>
-                      <span className="mt-1 block text-xs text-gray-400">Max 500 KB · Drag & drop or tap to browse</span>
+                      <span className="mt-1 block text-xs text-gray-400">Max 1 MB · Drag &amp; drop or tap to browse</span>
                     </div>
                   </button>
                 )}

@@ -1,7 +1,7 @@
 export type Status = "Pending" | "Ongoing" | "Resolved";
 
 /** Max photo size for report uploads (Cloudinary). */
-export const MAX_PHOTO_BYTES = 500 * 1024;
+export const MAX_PHOTO_BYTES = 1 * 1024 * 1024;
 
 
 export interface Comment {
